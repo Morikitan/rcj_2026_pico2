@@ -1,2 +1,7 @@
 add_subdirectory(camera)
 add_subdirectory(line)
+add_subdirectory(action)
+add_subdirectory(motor)
+add_subdirectory(pico)
+add_subdirectory(ball)
+add_subdirectory(gyro)
