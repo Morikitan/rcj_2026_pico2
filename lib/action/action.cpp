@@ -4,7 +4,7 @@
 #include "hardware/gpio.h"
 
 void VariableSetup(){
-
+    
 }
 
 void PinSetup(){

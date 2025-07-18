@@ -15,4 +15,8 @@ target_link_libraries(main pico_stdlib)
 # Add the standard include files to the build
 target_include_directories(main PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 
+target_include_directories(main PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}/ssd1306
+)
+
 pico_add_extra_outputs(main)
