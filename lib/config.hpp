@@ -43,7 +43,7 @@ extern struct GoalInformation OpponentGoal;
 extern int LeftWall, RightWall;
 
 //display
-#define DisplayI2C i2c
+#define DisplayI2C i2c0
 #define DisplaySDApin 21
 #define DisplaySCLpin 22
 
