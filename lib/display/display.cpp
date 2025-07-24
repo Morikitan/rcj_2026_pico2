@@ -1,6 +1,7 @@
 
 // u8g2_user_impl.cpp
 #include "hardware/i2c.h"
+#include "hardware/gpio.h"
 #include "pico/stdlib.h"
 
 #include "display.hpp"
@@ -10,11 +11,17 @@
 
 void DisplaySetup(u8g2_t *u8g2){
     // ディスプレイ初期化（I2C + ノーブランドSSD1306用）
+    i2c_init(DisplayI2C, 100 * 1000);  // 400kHz
+    gpio_set_function(DisplaySDApin, GPIO_FUNC_I2C);  // SDA
+    gpio_set_function(DisplaySCLpin, GPIO_FUNC_I2C);  // SCL
+    printf("1");
     u8g2_Setup_ssd1306_i2c_128x64_noname_f(
         u8g2, U8G2_R0, u8x8_byte_pico_i2c, u8x8_gpio_and_delay_cb);
+    printf("2");
     u8g2_SetI2CAddress(u8g2, 0x3C << 1); // I2Cアドレス (8bit形式)
-
+    printf("3");
     u8g2_InitDisplay(u8g2);
+    printf("4");
     u8g2_SetPowerSave(u8g2, 0); // 電源ON
 }
 
@@ -22,6 +29,7 @@ void UseDisplay(u8g2_t *u8g2){
     u8g2_ClearBuffer(u8g2);                  // バッファをクリア
     u8g2_SetFont(u8g2, u8g2_font_ncenB08_tr); // フォント選択
     u8g2_DrawStr(u8g2, 0, 24, "Hello Pico!"); // 文字列描画
+    printf("Hello Pico!\n");
     u8g2_SendBuffer(u8g2);                   // 表示に反映
     sleep_ms(1000);
 }
@@ -30,15 +38,15 @@ void UseDisplay(u8g2_t *u8g2){
 uint8_t u8x8_byte_pico_i2c(u8x8_t *u8g8, uint8_t msg,uint8_t arg_int, void *arg_ptr) {
     switch (msg) {
         case U8X8_MSG_BYTE_INIT:
-            i2c_init(DisplayI2C, 400 * 1000);  // 400kHz
+            i2c_init(DisplayI2C, 100 * 1000);  // 400kHz
             gpio_set_function(DisplaySDApin, GPIO_FUNC_I2C);  // SDA
             gpio_set_function(DisplaySCLpin, GPIO_FUNC_I2C);  // SCL
-            gpio_pull_up(DisplaySDApin);
-            gpio_pull_up(DisplaySCLpin);
+            //gpio_pull_up(DisplaySDApin);
+            //gpio_pull_up(DisplaySCLpin);
             break;
 
         case U8X8_MSG_BYTE_SEND:
-            i2c_write_blocking(DisplayI2C, 0x3C, (uint8_t *)arg_ptr, arg_int, true);
+            i2c_write_blocking(DisplayI2C, 0x3C << 1, (uint8_t *)arg_ptr, arg_int, false);
             break;
 
         case U8X8_MSG_BYTE_START_TRANSFER:
