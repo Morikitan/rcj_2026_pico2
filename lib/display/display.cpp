@@ -26,6 +26,7 @@ void DisplaySetup(u8g2_t *u8g2){
 }
 
 void UseDisplay(u8g2_t *u8g2){
+    u8g2_SetContrast(u8g2, 255);  // 最大
     u8g2_ClearBuffer(u8g2);                  // バッファをクリア
     u8g2_SetFont(u8g2, u8g2_font_ncenB08_tr); // フォント選択
     u8g2_DrawStr(u8g2, 0, 24, "Hello Pico!"); // 文字列描画
