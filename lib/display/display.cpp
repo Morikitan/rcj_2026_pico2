@@ -7,15 +7,13 @@
 #include "../config.hpp"
 #include "u8g2.h"
 
-
-
 void DisplaySetup(u8g2_t *u8g2){
     // ディスプレイ初期化（I2C + ノーブランドSSD1306用）
     i2c_init(DisplayI2C, 400 * 1000);  // 400kHz
     gpio_set_function(DisplaySDApin, GPIO_FUNC_I2C);  // SDA
     gpio_set_function(DisplaySCLpin, GPIO_FUNC_I2C);  // SCL
-    //gpio_pull_up(DisplaySDApin);
-    //gpio_pull_up(DisplaySCLpin);
+    gpio_pull_up(DisplaySDApin);
+    gpio_pull_up(DisplaySCLpin);
     printf("1");
     u8g2_Setup_ssd1306_i2c_128x64_noname_f(
         u8g2, U8G2_R0, u8x8_byte_pico_i2c, u8x8_gpio_and_delay_cb);
@@ -28,7 +26,7 @@ void DisplaySetup(u8g2_t *u8g2){
 }
 
 void UseDisplay(u8g2_t *u8g2){
-    u8g2_SetContrast(u8g2, 255);  // 最大
+    u8g2_SetContrast(u8g2, 128);  // 最大
     u8g2_ClearBuffer(u8g2);                  // バッファをクリア
     u8g2_SetFont(u8g2, u8g2_font_ncenB08_tr); // フォント選択
     u8g2_DrawStr(u8g2, 0, 24, "Hello Pico!"); // 文字列描画

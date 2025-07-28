@@ -44,8 +44,8 @@ extern int LeftWall, RightWall;
 
 //display
 #define DisplayI2C i2c1
-#define DisplaySDApin 26
-#define DisplaySCLpin 27
+#define DisplaySDApin 2
+#define DisplaySCLpin 3
 
 //gyro sensor
 #define GyroI2C i2c1
