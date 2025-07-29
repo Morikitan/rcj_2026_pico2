@@ -29,24 +29,45 @@ void UseDisplay(u8g2_t *u8g2){
     u8g2_SetContrast(u8g2, 128);  // 最大
     u8g2_ClearBuffer(u8g2);                  // バッファをクリア
     u8g2_SetFont(u8g2, u8g2_font_ncenB08_tr); // フォント選択
-    u8g2_DrawStr(u8g2, 0, 24, "Hello Pico!"); // 文字列描画
-    printf("Hello Pico!\n");
+    u8g2_DrawStr(u8g2, 0, 24, "Hello World!"); // 文字列描画
+    printf("I hate you!\n");
     u8g2_SendBuffer(u8g2);                   // 表示に反映
     sleep_ms(1000);
 }
 
 // I2C: GP4 = SDA, GP5 = SCL, I2C0使用
-uint8_t u8x8_byte_pico_i2c(u8x8_t *u8g8, uint8_t msg,uint8_t arg_int, void *arg_ptr) {
-    switch (msg) {
+uint8_t u8x8_byte_pico_i2c(u8x8_t *u8x8, uint8_t msg,uint8_t arg_int, void *arg_ptr) {
+    static uint8_t buffer[32];		/* u8g2/u8x8 will never send more than 32 bytes between START_TRANSFER and END_TRANSFER */
+    static uint8_t buf_idx;
+    uint8_t *data;
+ 
+    switch(msg)
+    {
         case U8X8_MSG_BYTE_SEND:
-            i2c_write_blocking(DisplayI2C, 0x78, (uint8_t *)arg_ptr, arg_int, true);
+            data = (uint8_t *)arg_ptr;      
+            while( arg_int > 0 )
+            {
+	            buffer[buf_idx++] = *data;
+	            data++;
+	            arg_int--;
+            }      
             break;
         case U8X8_MSG_BYTE_INIT:
-        case U8X8_MSG_BYTE_START_TRANSFER:
-        case U8X8_MSG_BYTE_END_TRANSFER:
+            /* add your custom code to init i2c subsystem */
             break;
-    }
-    return 1;
+        case U8X8_MSG_BYTE_SET_DC:
+            /* ignored for i2c */
+            break;
+        case U8X8_MSG_BYTE_START_TRANSFER:
+            buf_idx = 0;
+            break;
+        case U8X8_MSG_BYTE_END_TRANSFER:
+            i2c_write_blocking(i2c1,u8x8_GetI2CAddress(u8x8) >> 1,buffer,buf_idx,false);
+            break;
+        default:
+            return 0;
+  }
+  return 1;
 }
 
 // GPIOコールバック（未使用でも定義が必要）
