@@ -19,7 +19,7 @@ extern std::string SerialWatch;
 #define MainMotorPin3_1 1
 #define MainMotorPin3_2 1
 #define MainMotorPin4_1 1
-#define MainMotorpin4_2 1
+#define MainMotorPin4_2 1
 
 //dribbler motor
 #define DribblerMotorpin1 1
