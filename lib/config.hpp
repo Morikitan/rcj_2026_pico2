@@ -4,12 +4,16 @@
 /*******************
 ang 機体の角度(AngleX)
 bal ボールセンサーの値(BallDistance,BallAngle)
+cam カメラの値(自分と敵のゴールの距離と向き、壁との距離)
 lin ラインセンサーの値(0か1で受け取る)
 mot モーターに加わる電圧(AngleXもセットで)
 tim 1回の経過時間(ミリ秒)
-ble BLEの接続状況
 *******************/
 extern std::string SerialWatch;
+
+//mode
+extern int mode;  //mode = 99で全部正転
+extern char isYellowMyGoal;
 
 //main motor
 #define MainMotorPin1_1 1
@@ -20,6 +24,7 @@ extern std::string SerialWatch;
 #define MainMotorPin3_2 1
 #define MainMotorPin4_1 1
 #define MainMotorPin4_2 1
+int MotorDuty[4];
 
 //dribbler motor
 #define DribblerMotorpin1 1
@@ -32,11 +37,13 @@ extern int BallDistance;
 
 //camera
 #define CameraUART uart0
+#define CameraTXpin 1
+#define CameraRXpin 2
 struct GoalInformation{
     int X;
     int Y;
-    float Angle;
-    float Distance;
+    float angle;
+    float distance;
 };
 extern struct GoalInformation MyGoal;
 extern struct GoalInformation OpponentGoal;
