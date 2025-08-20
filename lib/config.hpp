@@ -56,6 +56,8 @@ extern int LeftWall, RightWall;
 
 //gyro sensor
 #define GyroI2C i2c1
+#define GyroSDApin 2
+#define GyroSCLpin 2
 
 extern float AngleX, AngleY, AngleZ;
 
