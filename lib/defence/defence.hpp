@@ -4,8 +4,8 @@
 extern "C" {
 #endif
 
-void PicoSetup();
-void UseEncoder();
+void Defence();
+void DefenceStart();
 
 #ifdef __cplusplus
 }

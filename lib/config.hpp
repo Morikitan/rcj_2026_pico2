@@ -15,6 +15,24 @@ extern std::string SerialWatch;
 extern int mode;  //mode = 99で全部正転
 extern char isYellowMyGoal;
 
+//speed
+#define LeastTurnSpeed 100
+#define LeastSpeed 120
+#define TurnSpeed 120
+#define DefaultSpeed 220
+#define DefaultSpeed1 170
+#define DefaultSpeed2 170
+#define DefaultSpeed3 170
+#define DefaultSpeed4 170
+#define LargeDefaultSpeed1 200
+#define LargeDefaultSpeed2 200
+#define LargeDefaultSpeed3 200
+#define LargeDefaultSpeed4 200
+#define LineSpeed 220
+#define DefenceSpeed 120
+#define SinSpeed 20
+#define VectorSpeed 30
+
 //main motor
 #define MainMotorPin1_1 1
 #define MainMotorPin1_2 1

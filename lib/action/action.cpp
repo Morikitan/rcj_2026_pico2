@@ -6,7 +6,35 @@
 
 //変数の初期化
 void VariableSetup(){
+    /******************
+    ang 機体の角度(AngleX)
+    bal ボールセンサーの値(BallDistance,BallAngle)
+    cam カメラの値(自分と敵のゴールの距離と向き、壁との距離)
+    lin ラインセンサーの値(0か1で受け取る)
+    mot モーターに加わる電圧(AngleXもセットで)
+    tim 1回の経過時間(ミリ秒)
+    *******************/
+    SerialWatch = 'a';
 
+    //必ず変更しましょう。1で黄色ゴールが自分側(相手にシュートされる側)。0で逆
+    isYellowMyGoal = 1;
+
+    //mode
+    mode = 0;  //mode = 99で全部正転
+
+    //gyro sensor
+    AngleX = 0; 
+    AngleY = 0; 
+    AngleZ = 0;
+
+    //line sensor        
+    ErorrLineSensor = 1;
+
+    //camera
+    struct GoalInformation MyGoal;
+    struct GoalInformation OpponentGoal;
+    LeftWall = 0;
+    RightWall = 0;
 }
 
 //その他のピンの初期化

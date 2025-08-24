@@ -11,9 +11,9 @@ void GyroSetup(){
     i2c_init(GyroI2C,115200);
     gpio_set_function(GyroSDApin, GPIO_FUNC_I2C);
     gpio_set_function(GyroSCLpin, GPIO_FUNC_I2C);
-    i2c_write_blocking(i2c1,BNO_ADDRESS,(uint8_t[]){0x00},1,true);
+    i2c_write_blocking(GyroI2C,BNO_ADDRESS,(uint8_t[]){0x00},1,true);
     uint8_t chip_id;
-    i2c_read_blocking(i2c1, BNO_ADDRESS, &chip_id, 1, false); 
+    i2c_read_blocking(GyroI2C, BNO_ADDRESS, &chip_id, 1, false); 
     if (chip_id != 0xA0) {
         while (true) {
             printf("bno055が見つかりません。\n");
@@ -32,7 +32,7 @@ void GyroSetup(){
         uint8_t delay = config[i][2];
 
         uint8_t data[2] = {reg, value};
-        i2c_write_blocking(i2c1, BNO_ADDRESS, data, 2, false); 
+        i2c_write_blocking(GyroI2C, BNO_ADDRESS, data, 2, false); 
         sleep_ms(delay); 
     }
     printf("bno055は正常に起動しました。\n");
