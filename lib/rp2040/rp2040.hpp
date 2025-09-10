@@ -4,7 +4,7 @@
 extern "C" {
 #endif
 
-void PicoSetup();
+void SPISetup();
 void UseEncoder();
 void BLDCState();
 
