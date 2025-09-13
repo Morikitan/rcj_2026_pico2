@@ -87,9 +87,9 @@ extern int AllLineSensorA, AllLineSensorB, AllLineSensorC, AllLineSensorD, AllLi
 extern int ErorrLineSensor;
 
 //SPI
-#define SPI_CSpin 45
-#define SPI_SCKpin 46
-#define SPI_RXpin 44
-#define SPI_TXpin 43
+#define SPI_CSpin 9
+#define SPI_SCKpin 10
+#define SPI_RXpin 12
+#define SPI_TXpin 11
 
 //others

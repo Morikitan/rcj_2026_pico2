@@ -7,6 +7,9 @@
 #include "hardware/spi.h"
 #include "../config.hpp"
 
+uint8_t buffer[30];
+uint8_t EmptyBuffer[8];
+
 void SPISetup(){
     gpio_init(SPI_TXpin);
     gpio_init(SPI_RXpin);
@@ -26,7 +29,11 @@ void SPISetup(){
 }
 
 void UseEncoder(){
-    spi_write_blocking(spi1,uint8_t[]{0x01},1);
+    spi_write_blocking(spi1,(uint8_t[]){0x01},1);
+    while(!spi_is_readable(spi1)){
+        printf("spiの待機中");
+    }
+    spi_read_blocking(spi1,8,buffer,8);
 }
 
 //pulse_us : 1000～2000の間。1000で静止。2000で最高速度。
