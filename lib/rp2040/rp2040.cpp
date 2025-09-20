@@ -76,7 +76,7 @@ void BLDCState(int pulse_us){
 //
 //data : 送るデータ(uint8_t型)
 //even_parity : 偶数か奇数のどちらになるようにパリティを付加するか。trueで偶数。falseで奇数。
-void picoPioUartTx_program_putc(uint8_t data, bool even_parity) {
+void picoPioUartTx_program_putc(unsigned char data, bool even_parity) {
     uint32_t byte = (uint32_t)data;
     uint8_t parity = 0;
     for (int i = 0; i < 8; i++) {
@@ -100,10 +100,13 @@ void picoPioUartTx_program_putc(uint8_t data, bool even_parity) {
 //
 //
 //even_parity : 偶数か奇数のどちらになるようにパリティを付加されているか。trueで偶数。falseで奇数。
-//parity_check : パリティビットの結果。正しいならtrue。違ったらfalseで、例外処理を用意する。
-
+//parity_check : パリティビットの結果。正しいならtrue。違ったらfalseで、例外処理を用意する。データがなくてもfalseになる。
 unsigned char picoPioUartRx_program_getc(bool even_parity,bool* parity_check) {
-    while (pio_sm_is_rx_fifo_empty(pio, sm_rx)) tight_loop_contents();
+    // if(pio_sm_is_rx_fifo_empty(pio, sm_rx)){
+        // *parity_check = false;
+        // return 0;
+    // }else{
+     while (pio_sm_is_rx_fifo_empty(pio, sm_rx)) tight_loop_contents();
 
     uint32_t c32 = pio_sm_get(pio, sm_rx);
     
@@ -119,6 +122,7 @@ unsigned char picoPioUartRx_program_getc(bool even_parity,bool* parity_check) {
 
     *parity_check = (pcheck == real_parity);
 
-    return (uint8_t)c32 & 0xff;
+    return (uint8_t)(c32 & 0xff);
+    // }
 }
 
