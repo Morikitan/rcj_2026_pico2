@@ -36,13 +36,13 @@ void OldSPISetup(){
     */
 }
 
+//pioをつかったUARTの初期設定
 void RP2040Setup(){
     /*********************************
     UART通信の信号
     0x01 : エンコーダー
 
     */
-    
     pio = pio0;
 
     sm_rx = 0;
@@ -72,14 +72,18 @@ void BLDCState(int pulse_us){
 
 }
 
-void picoPioUartTx_program_putc(char c, bool even_parity) {
-    uint32_t byte = (uint32_t)c;
+//UART(シリアル通信)で送信する関数
+//
+//data : 送るデータ(uint8_t型)
+//even_parity : 偶数か奇数のどちらになるようにパリティを付加するか。trueで偶数。falseで奇数。
+void picoPioUartTx_program_putc(uint8_t data, bool even_parity) {
+    uint32_t byte = (uint32_t)data;
     uint8_t parity = 0;
     for (int i = 0; i < 8; i++) {
         parity ^= byte & 0x1;
         byte >>= 1;
     }
-    byte = (uint32_t)c;
+    byte = (uint32_t)data;
     if (parity) {
         if (even_parity) {
             byte |= 0x100;  // 偶数になるようにパリティを付加します
@@ -92,45 +96,29 @@ void picoPioUartTx_program_putc(char c, bool even_parity) {
     pio_sm_put_blocking(pio, sm_tx, (uint32_t)byte);  // TX FIFOへputします
 }
 
-// パリティが正しければ parity_check が true になります
-char picoPioUartRx_program_getc(bool even_parity,bool* parity_check) {
+//UART(シリアル通信)で受信する関数
+//
+//
+//even_parity : 偶数か奇数のどちらになるようにパリティを付加されているか。trueで偶数。falseで奇数。
+//parity_check : パリティビットの結果。正しいならtrue。違ったらfalseで、例外処理を用意する。
+
+unsigned char picoPioUartRx_program_getc(bool even_parity,bool* parity_check) {
     while (pio_sm_is_rx_fifo_empty(pio, sm_rx)) tight_loop_contents();
 
     uint32_t c32 = pio_sm_get(pio, sm_rx);
-    // MSB側の上位9ビットに値があるのでシフトして下位に持っていく
-    c32 >>= 23;
-    bool real_parity = false;
-    if (c32 & 0x100) {
-        real_parity = true;
-    } else {
-        real_parity = false;
-    }
+    
+    //パリティビットの検証をする
+    bool real_parity = (c32 & 0x100) != 0;
+    uint8_t byte = c32 & 0xff;
 
-    uint32_t byte = c32 & 0xff;
     uint8_t pcheck = 0;
-
-    // パリティの計算
     for (int i = 0; i < 8; i++) {
         pcheck ^= byte & 0x1;
         byte >>= 1;
     }
-    if (real_parity) {
-        if (even_parity) {
-            if (pcheck) {
-                *parity_check = true;
-            } else {
-                *parity_check = false;
-            }
-        }
-    } else {
-        if (!even_parity) {
-            if (pcheck) {
-                *parity_check = true;
-            } else {
-                *parity_check = false;
-            }
-        }
-    }
-    return (char)c32 & 0xff;
+
+    *parity_check = (pcheck == real_parity);
+
+    return (uint8_t)c32 & 0xff;
 }
 
