@@ -42,7 +42,7 @@ extern char isYellowMyGoal;
 #define MainMotorPin3_2 1
 #define MainMotorPin4_1 1
 #define MainMotorPin4_2 1
-int MotorDuty[4];
+extern int MotorDuty[4];
 
 //dribbler motor
 #define DribblerMotorpin1 1
@@ -91,5 +91,6 @@ extern int ErorrLineSensor;
 #define SPI_SCKpin 10
 #define SPI_RXpin 12
 #define SPI_TXpin 11
+#define SERIAL_BAUD 125000
 
 //others

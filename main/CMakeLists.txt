@@ -14,7 +14,7 @@ target_include_directories(main PRIVATE ../lib)
 # Add the standard library to the build
 target_link_libraries(main pico_stdlib hardware_i2c)
 target_link_libraries(main action ball camera display)
-target_link_libraries(main gyro line motor pico)
+target_link_libraries(main gyro line motor rp2040)
 
 # Add the standard include files to the build
 target_include_directories(main PRIVATE ${CMAKE_CURRENT_LIST_DIR})

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "display/display.hpp"
+#include "rp2040/rp2040.hpp"
 #include "u8g2.h"
 #include "hardware/i2c.h"
 #include "config.hpp"
@@ -15,11 +16,13 @@ int main()
     
     printf("初期化開始\n");
     // ディスプレイ初期化（I2C + ノーブランドSSD1306用）
-    DisplaySetup(&u8g2);
+    //DisplaySetup(&u8g2);
     printf("初期化終了\n");
     while (true) {
-        UseDisplay(&u8g2);
         //UseDisplay(&u8g2);
+        // UseDisplay(&u8g2);
+        //UseEncoder();
+        sleep_ms(1000);
     }
     
 }
