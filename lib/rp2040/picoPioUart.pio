@@ -1,5 +1,5 @@
 .program picoPioUartRx
-    wait 0 pin 12       ; GPIO12のスタートビットを待ちます
+    wait 0 pin 0        ; スタートビットを待ちます
     set y, 8 [10]       ; yに8をセットし10クロック遅延します
 bitloop:                ; 
     in pins, 1          ; 指定されたピンから1ビット読みます

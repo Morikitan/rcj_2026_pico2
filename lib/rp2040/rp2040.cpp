@@ -48,13 +48,13 @@ void RP2040Setup(){
     sm_rx = 0;
 
     offset = pio_add_program(pio, &picoPioUartRx_program);
-    picoPioUartRx_program_init(pio, sm_rx, offset, SPI_RXpin, SERIAL_BAUD);
+    picoPioUartRx_program_init(pio, sm_rx, offset, (uint)SPI_RXpin, SERIAL_BAUD);
 
     // 使うSMを指定します(送信と受信では別のSMを使う)
     sm_tx = 1;
 
     offset2 = pio_add_program(pio, &picoPioUartTx_program);
-    picoPioUartTx_program_init(pio, sm_tx, offset2, SPI_TXpin, SERIAL_BAUD);
+    picoPioUartTx_program_init(pio, sm_tx, offset2, (uint)SPI_TXpin, SERIAL_BAUD);
 }
 
 void OldUseEncoder(){
@@ -109,7 +109,8 @@ unsigned char picoPioUartRx_program_getc(bool even_parity,bool* parity_check) {
      while (pio_sm_is_rx_fifo_empty(pio, sm_rx)) tight_loop_contents();
 
     uint32_t c32 = pio_sm_get(pio, sm_rx);
-    
+
+    c32 >>= 23;
     //パリティビットの検証をする
     bool real_parity = (c32 & 0x100) != 0;
     uint8_t byte = c32 & 0xff;
@@ -122,7 +123,7 @@ unsigned char picoPioUartRx_program_getc(bool even_parity,bool* parity_check) {
 
     *parity_check = (pcheck == real_parity);
 
-    return (uint8_t)(c32 & 0xff);
+    return (unsigned char)(c32 & 0xff);
     // }
 }
 

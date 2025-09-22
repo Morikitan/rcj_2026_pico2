@@ -17,8 +17,9 @@ int main()
     printf("初期化開始\n");
     // ディスプレイ初期化（I2C + ノーブランドSSD1306用）
     //DisplaySetup(&u8g2);
-    printf("初期化終了\n");
     RP2040Setup();
+    printf("初期化終了\n");
+    
     while (true) {
         //UseDisplay(&u8g2);
         // UseDisplay(&u8g2);
@@ -28,8 +29,9 @@ int main()
         bool parity_check;
         unsigned char data = picoPioUartRx_program_getc(true,&parity_check);
         if(parity_check == true){
-            printf("結果 %u\n",data);
+            printf("結果 %x\n",data);
         }
+        //printf("%d\n",(int)gpio_get(12));
     }
     
 }
