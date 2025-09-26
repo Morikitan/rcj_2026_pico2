@@ -1,3 +1,3 @@
 add_library(ball ball.cpp)
 
-target_link_libraries(ball pico_stdlib hardware_gpio)
+target_link_libraries(ball pico_stdlib hardware_gpio hardware_i2c)

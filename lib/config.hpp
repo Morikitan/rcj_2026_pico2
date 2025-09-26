@@ -49,14 +49,16 @@ extern int MotorDuty[4];
 #define DribblerMotorpin2 1
 
 //ball sensor
-#define BallUART uart1
+#define BallI2C i2c0
+#define BallSDApin 16
+#define BallSCLpin 17
 extern float BallAngle;  //999.0でボール持ってる。-999.0で行方不明
 extern int BallDistance;
 
 //camera
-#define CameraUART uart0
-#define CameraTXpin 1
-#define CameraRXpin 2
+#define CameraUART uart1
+#define CameraTXpin 4
+#define CameraRXpin 5
 struct GoalInformation{
     int X;
     int Y;
@@ -74,13 +76,15 @@ extern int LeftWall, RightWall;
 
 //gyro sensor
 #define GyroI2C i2c1
-#define GyroSDApin 2
-#define GyroSCLpin 2
+#define GyroSDApin 14
+#define GyroSCLpin 15
 
 extern float AngleX, AngleY, AngleZ;
 
 //line sensor
-#define LineI2C i2c0
+#define LineUart uart0
+#define LineTXpin 12
+#define LineRXpin 13
 extern char LineSensorABCD[16];
 extern char LineSensorE[16];
 extern int AllLineSensorA, AllLineSensorB, AllLineSensorC, AllLineSensorD, AllLineSensorE, AllLineSensor;
