@@ -3,6 +3,24 @@
 #include "../config.hpp"
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
+#include <string>
+
+std::string SerialWatch;
+int mode;
+char isYellowMyGoal;
+int MotorDuty[4];
+float BallAngle;  //999.0でボール持ってる。-999.0で行方不明
+int BallDistance;
+struct GoalInformation MyGoal;
+struct GoalInformation OpponentGoal;
+int LeftWall, RightWall;
+float AngleX, AngleY, AngleZ;
+char LineSensorABCD[16];
+char LineSensorE[16];
+int AllLineSensorA, AllLineSensorB, AllLineSensorC, AllLineSensorD, AllLineSensorE, AllLineSensor;
+int ErorrLineSensor;
+bool isMotorClockWise[4];
+float motorFrequency[4];
 
 //変数の初期化
 void VariableSetup(){
@@ -31,8 +49,6 @@ void VariableSetup(){
     ErorrLineSensor = 1;
 
     //camera
-    struct GoalInformation MyGoal;
-    struct GoalInformation OpponentGoal;
     LeftWall = 0;
     RightWall = 0;
 }

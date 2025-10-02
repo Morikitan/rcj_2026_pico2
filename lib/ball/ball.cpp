@@ -105,22 +105,20 @@ void UseBallSensor(){
     }
 
     if(VectorX == 999 && VectorY == 999){
-      BallAngle = 63;
+      BallAngle = -999;
     }else if(VectorX == 0 && VectorY == 0){
       BallAngle = 0;
     }else{
       if(atan2(VectorY,VectorX) < 1.57){
-        BallAngle = int((1.57 - atan2(VectorY,VectorX)) / 3.1415 * 16);
+        BallAngle = int((1.57 - atan2(VectorY,VectorX)) / 3.1415 * 16) * 11.25;
       }else{
-        BallAngle = int((7.85 - atan2(VectorY,VectorX)) / 3.1415 * 16);
+        BallAngle = int((7.85 - atan2(VectorY,VectorX)) / 3.1415 * 16) * 11.25;
       }
     }
     //角度の微調整
-    if(BallAngle == 31){
+    if(BallAngle == 348.75){
       BallAngle = 0;
-    }else{
-      BallAngle++;
+    }else if(BallAngle != 999){
+      BallAngle += 11.25;
     }
-
-    BallAngle *= 11.25;
 }

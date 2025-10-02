@@ -17,6 +17,8 @@ uint sm_rx;
 uint sm_tx;
 uint offset;
 uint offset2;
+bool parity_check;
+unsigned char encoderData[8];
 
 void OldSPISetup(){
     gpio_init(SPI_TXpin);
@@ -60,7 +62,8 @@ void RP2040Setup(){
 void OldUseEncoder(){
     spi_write_blocking(spi1,(uint8_t[]){0x01},1);
     while(!spi_is_readable(spi1)){
-        printf("spiの待機中");
+        tight_loop_contents();
+        //printf("spiの待機中");
     }
     spi_read_blocking(spi1,8,buffer,8);
     printf("%d %d %d %d %d %d %d %d \n",buffer[0],buffer[1]
@@ -70,6 +73,18 @@ void OldUseEncoder(){
 //pulse_us : 1000～2000の間。1000で静止。2000で最高速度。
 void BLDCState(int pulse_us){
 
+}
+
+void UseEncoder(){
+    picoPioUartTx_program_putc(0x24,true);
+    for(int i = 0;i < 8;i++){
+        encoderData[i] = picoPioUartRx_program_getc(true,&parity_check);
+    }
+    for(int i = 0;i < 4;i++){
+        int motornumber = encoderData[i*2] >> 5;
+        if(encoderData[i*2] >> 4 & 0x01 == 0x01) isMotorClockWise[i] = true;
+        motorFrequency[i] = ((uint16_t)(encoderData[i*2] & 0x0F) << 8 | (uint16_t)encoderData[i*2 + 1]) / 100.0;    
+    }
 }
 
 //UART(シリアル通信)で送信する関数

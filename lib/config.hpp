@@ -97,4 +97,8 @@ extern int ErorrLineSensor;
 #define SPI_TXpin 11
 #define SERIAL_BAUD 125000
 
+//encoder
+extern bool isMotorClockWise[4];
+extern float motorFrequency[4];
+
 //others
