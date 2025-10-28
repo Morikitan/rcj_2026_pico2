@@ -85,8 +85,11 @@ extern float AngleX, AngleY, AngleZ;
 #define LineUart uart0
 #define LineTXpin 12
 #define LineRXpin 13
-extern char LineSensorABCD[16];
-extern char LineSensorE[16];
+extern char LineSensorA[9];
+extern char LineSensorB[9];
+extern char LineSensorC[9];
+extern char LineSensorD[9];
+extern char LineSensorE[48];
 extern int AllLineSensorA, AllLineSensorB, AllLineSensorC, AllLineSensorD, AllLineSensorE, AllLineSensor;
 extern int ErorrLineSensor;
 

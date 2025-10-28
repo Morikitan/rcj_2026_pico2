@@ -1,5 +1,10 @@
 #include "action.hpp"
 #include "motor.hpp"
+#include "ball.hpp"
+#include "camera.hpp"
+#include "display.hpp"
+#include "gyro.hpp"
+#include "line.hpp"
 #include "../config.hpp"
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
@@ -15,8 +20,11 @@ struct GoalInformation MyGoal;
 struct GoalInformation OpponentGoal;
 int LeftWall, RightWall;
 float AngleX, AngleY, AngleZ;
-char LineSensorABCD[16];
-char LineSensorE[16];
+char LineSensorA[9];
+char LineSensorB[9];
+char LineSensorC[9];
+char LineSensorD[9];
+char LineSensorE[48];
 int AllLineSensorA, AllLineSensorB, AllLineSensorC, AllLineSensorD, AllLineSensorE, AllLineSensor;
 int ErorrLineSensor;
 bool isMotorClockWise[4];
@@ -32,7 +40,7 @@ void VariableSetup(){
     mot モーターに加わる電圧(AngleXもセットで)
     tim 1回の経過時間(ミリ秒)
     *******************/
-    SerialWatch = 'a';
+    SerialWatch = "ang";
 
     //必ず変更しましょう。1で黄色ゴールが自分側(相手にシュートされる側)。0で逆
     isYellowMyGoal = 1;
@@ -83,5 +91,5 @@ void UseMotorDuty(){
 
 //すべてのセンサーを使用する。
 void UseAllSensor(){
-
+    
 }

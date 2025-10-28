@@ -13,3 +13,8 @@ target_include_directories(attack PRIVATE ../defence)
 target_include_directories(attack PRIVATE ../ball)
 
 target_link_libraries(attack pico_stdlib hardware_pwm hardware_gpio)
+
+#display.hppの中のu8g2ライブラリを有効にする
+target_include_directories(attack PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}/../u8g2/csrc
+)
