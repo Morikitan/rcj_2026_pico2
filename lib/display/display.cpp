@@ -6,8 +6,11 @@
 #include "display.hpp"
 #include "../config.hpp"
 #include "u8g2.h"
+#include <string>
 
-void DisplaySetup(u8g2_t *u8g2){
+u8g2_t u8g2;
+
+void DisplaySetup(){
     // ディスプレイ初期化（I2C + ノーブランドSSD1309用）
     i2c_init(DisplayI2C, 400 * 1000);  // 400kHz
     gpio_set_function(DisplaySDApin, GPIO_FUNC_I2C);  // SDA
@@ -17,23 +20,30 @@ void DisplaySetup(u8g2_t *u8g2){
     printf("1");
     //0_fを2_fにするとピン番号の向きが反転する
     u8g2_Setup_ssd1309_i2c_128x64_noname0_f(
-        u8g2, U8G2_R0, u8x8_byte_pico_i2c, u8x8_gpio_and_delay_cb);
+        &u8g2, U8G2_R0, u8x8_byte_pico_i2c, u8x8_gpio_and_delay_cb);
     printf("2");
-    u8g2_SetI2CAddress(u8g2, 0x78); // I2Cアドレス (8bit形式) ←これあってる？
+    u8g2_SetI2CAddress(&u8g2, 0x78); // I2Cアドレス (8bit形式) ←これあってる？
     printf("3");
-    u8g2_InitDisplay(u8g2);
+    u8g2_InitDisplay(&u8g2);
     printf("4");
-    u8g2_SetPowerSave(u8g2, 0); // 電源ON
+    u8g2_SetPowerSave(&u8g2, 0); // 電源ON
 }
 
-void UseDisplay(u8g2_t *u8g2){
-    u8g2_SetContrast(u8g2, 128);  // 最大
-    u8g2_ClearBuffer(u8g2);                  // バッファをクリア
-    u8g2_SetFont(u8g2, u8g2_font_ncenB08_tr); // フォント選択
-    u8g2_DrawStr(u8g2, 0, 24, "Hello World!"); // 文字列描画
-    printf("HelloWorld!\n");
-    u8g2_SendBuffer(u8g2);                   // 表示に反映
-    sleep_ms(1000);
+// x : 左端からのx座標(0～127)
+// y : 上端からのy座標(0～63)
+// word : 書き込む文字列(char型の配列)
+// size : 文字の大きさ。8 or 14
+void WriteWordOnDisplay(char x,char y,char *word,char size){
+    u8g2_SetContrast(&u8g2, 128);  // 最大
+    u8g2_ClearBuffer(&u8g2);                  // バッファをクリア
+    // フォント選択
+    if(size == 8)u8g2_SetFont(&u8g2, u8g2_font_ncenB08_tr); 
+    else if(size == 14)u8g2_SetFont(&u8g2, u8g2_font_ncenB08_tr); // フォント選択
+    else return;
+
+    u8g2_DrawStr(&u8g2, x, y, word); // 文字列描画
+    printf(word);
+    u8g2_SendBuffer(&u8g2);                   // 表示に反映
 }
 
 // I2C: GP4 = SDA, GP5 = SCL, I2C0使用

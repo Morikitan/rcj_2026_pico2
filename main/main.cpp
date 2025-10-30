@@ -6,8 +6,6 @@
 #include "hardware/i2c.h"
 #include "config.hpp"
 
-u8g2_t u8g2;
-
 int main()
 {
     stdio_init_all();

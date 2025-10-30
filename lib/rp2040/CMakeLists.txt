@@ -7,5 +7,5 @@ pico_generate_pio_header(rp2040 ${CMAKE_CURRENT_LIST_DIR}/picoPioUart.pio)
 
 #display.hppの中のu8g2ライブラリを有効にする
 target_include_directories(rp2040 PRIVATE
-    ${CMAKE_CURRENT_LIST_DIR}/../u8g2/csrc
+    ${CMAKE_CURRENT_LIST_DIR}/../display/u8g2/csrc
 )

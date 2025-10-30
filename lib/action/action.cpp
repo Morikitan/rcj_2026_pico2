@@ -89,7 +89,10 @@ void UseMotorDuty(){
     }
 }
 
-//すべてのセンサーを使用する。
+//エンコーダー以外のすべてのセンサーを使用する。
 void UseAllSensor(){
-    
+    UseBallSensor();
+    UseCamera();
+    UseGyroSensor();
+    UseLineSensor();
 }

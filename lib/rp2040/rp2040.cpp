@@ -72,7 +72,7 @@ void OldUseEncoder(){
 
 //pulse_us : 1000～2000の間。1000で静止。2000で最高速度。
 void BLDCState(int pulse_us){
-
+    picoPioUartTx_program_putc(0x48,true);
 }
 
 void UseEncoder(){
