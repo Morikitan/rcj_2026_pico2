@@ -42,8 +42,8 @@ void OldSPISetup(){
 void RP2040Setup(){
     /*********************************
     UART通信の信号
-    0x01 : エンコーダー
-
+    0x24 : エンコーダー
+    0x48 : BLDC
     */
     pio = pio0;
 
@@ -73,6 +73,8 @@ void OldUseEncoder(){
 //pulse_us : 1000～2000の間。1000で静止。2000で最高速度。
 void BLDCState(int pulse_us){
     picoPioUartTx_program_putc(0x48,true);
+    picoPioUartTx_program_putc((unsigned char)(pulse_us / 256),true);
+    picoPioUartTx_program_putc((unsigned char)(pulse_us % 256),true);
 }
 
 void UseEncoder(){

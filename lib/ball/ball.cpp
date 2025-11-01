@@ -1,6 +1,7 @@
 #include "ball.hpp"
 #include "../config.hpp"
 #include "pico/stdlib.h"
+#include "rp2040.hpp"
 #include "math.h"
 #include "hardware/gpio.h"
 #include "hardware/i2c.h"
@@ -26,6 +27,7 @@ void BallSetup(){
 
 //ボールセンサー(赤外線センサー)を使う。
 void UseBallSensor(){
+    //ボール検知センサを調べる
     i2c_write_blocking(BallI2C,0x42,(uint8_t[]){0x01},1,false);
     while(!i2c_get_read_available(BallI2C)){}
     i2c_read_blocking(BallI2C,0x42,buffer,32,false);
