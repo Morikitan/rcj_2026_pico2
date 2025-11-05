@@ -93,11 +93,10 @@ extern char LineSensorE[48];
 extern int AllLineSensorA, AllLineSensorB, AllLineSensorC, AllLineSensorD, AllLineSensorE, AllLineSensor;
 extern int ErorrLineSensor;
 
-//SPI
-#define SPI_CSpin 9
-#define SPI_SCKpin 10
-#define SPI_RXpin 12
-#define SPI_TXpin 11
+//UART for RP2040
+#define RP2040_UART_TXpin 43
+#define RP2040_UART_RXpin 44
+#define RP2040_UART_IRQpin 45
 #define SERIAL_BAUD 125000
 
 //encoder

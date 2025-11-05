@@ -6,6 +6,7 @@
 #include "hardware/gpio.h"
 #include "hardware/spi.h"
 #include "hardware/pio.h"
+#include "hardware/sync.h"
 #include "picoPioUart.pio.h"
 #include "../config.hpp"
 
@@ -20,23 +21,6 @@ uint offset2;
 bool parity_check;
 unsigned char encoderData[8];
 
-void OldSPISetup(){
-    gpio_init(SPI_TXpin);
-    gpio_init(SPI_RXpin);
-    gpio_init(SPI_SCKpin);
-    gpio_init(SPI_CSpin);
-    gpio_set_function(SPI_TXpin,GPIO_FUNC_SPI); 
-    gpio_set_function(SPI_RXpin,GPIO_FUNC_SPI);
-    gpio_set_function(SPI_SCKpin,GPIO_FUNC_SPI);
-    gpio_set_dir(SPI_CSpin,GPIO_OUT);
-    gpio_put(SPI_CSpin,false); //常にLOWにしておく
-    spi_init(spi1,2000000); //2MHz
-    /*********************************
-    SPI通信の信号
-    0x01 : エンコーダー
-
-    */
-}
 
 //pioをつかったUARTの初期設定
 void RP2040Setup(){
@@ -44,19 +28,26 @@ void RP2040Setup(){
     UART通信の信号
     0x24 : エンコーダー
     0x48 : BLDC
+    0x72 : ボール検知
+    0x96 : modeの確認
     */
     pio = pio0;
 
     sm_rx = 0;
 
     offset = pio_add_program(pio, &picoPioUartRx_program);
-    picoPioUartRx_program_init(pio, sm_rx, offset, (uint)SPI_RXpin, SERIAL_BAUD);
+    picoPioUartRx_program_init(pio, sm_rx, offset, (uint)RP2040_UART_RXpin, SERIAL_BAUD);
 
-    // 使うSMを指定します(送信と受信では別のSMを使う)
+    // 使うSMを指定する(送信と受信では別のSMを使う)
     sm_tx = 1;
 
     offset2 = pio_add_program(pio, &picoPioUartTx_program);
-    picoPioUartTx_program_init(pio, sm_tx, offset2, (uint)SPI_TXpin, SERIAL_BAUD);
+    picoPioUartTx_program_init(pio, sm_tx, offset2, (uint)RP2040_UART_TXpin, SERIAL_BAUD);
+
+    //割り込みの設定
+    gpio_init(RP2040_UART_IRQpin);
+    gpio_set_dir(RP2040_UART_IRQpin,GPIO_IN);
+    gpio_set_irq_enabled_with_callback(RP2040_UART_IRQpin,GPIO_IRQ_EDGE_RISE,true,&ChangeMode);
 }
 
 void OldUseEncoder(){
@@ -144,3 +135,10 @@ unsigned char picoPioUartRx_program_getc(bool even_parity,bool* parity_check) {
     // }
 }
 
+//rp2040からくるモード変更の要求に応じてモードを変更する関数
+void ChangeMode(uint gpio, uint32_t events){
+    mode = (int)picoPioUartRx_program_getc(true,&parity_check);
+    if(parity_check == false){
+        picoPioUartTx_program_putc(0x96,true);
+    }
+}
