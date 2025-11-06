@@ -20,10 +20,11 @@ uint offset;
 uint offset2;
 bool parity_check;
 unsigned char encoderData[8];
-
+int mode;
 
 //pioをつかったUARTの初期設定
 void RP2040Setup(){
+    mode = 0;
     /*********************************
     UART通信の信号
     0x24 : エンコーダー
@@ -136,7 +137,7 @@ unsigned char picoPioUartRx_program_getc(bool even_parity,bool* parity_check) {
 }
 
 //rp2040からくるモード変更の要求に応じてモードを変更する関数
-void ChangeMode(uint gpio, uint32_t events){
+void ChangeMode(unsigned int gpio, unsigned long events){
     mode = (int)picoPioUartRx_program_getc(true,&parity_check);
     if(parity_check == false){
         picoPioUartTx_program_putc(0x96,true);

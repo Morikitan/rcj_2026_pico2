@@ -30,6 +30,10 @@ int main()
             printf("結果 %x\n",data);
         }
         //printf("%d\n",(int)gpio_get(12));
+
+        if(mode == 1 || mode == 2){
+            //Attack();
+        }
     }
     
 }
