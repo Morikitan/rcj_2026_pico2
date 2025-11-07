@@ -253,7 +253,7 @@ void NewLineMove(){
         }
         DeltaTime += time_us_32() / 1000000.0 - MainPreTime;
         MainPreTime = time_us_32() / 1000000.0;
-        LineAngle = GetLineAngle();
+        // LineAngle = GetLineAngle();
         //-999.9の時は中央なので何もしない
         if(LineAngle == 999.9 || (FirstAngle > 0 && (FirstAngle - 4.71 < LineAngle && LineAngle < FirstAngle - 1.57)) || (FirstAngle == 0 && (LineAngle < -1.57 || 1.57 < LineAngle)) || (FirstAngle < 0 && (FirstAngle + 1.57 < LineAngle && LineAngle < FirstAngle + 4.71))){
           //円形が反応しないか、最初の向きと逆の時
@@ -267,7 +267,7 @@ void NewLineMove(){
           MotorDuty[2] = (int)(LineSpeed * (-cos(LineAngle) - sin(LineAngle)) / 1.2);
           MotorDuty[3] = (int)(LineSpeed * (cos(LineAngle) - sin(LineAngle)) / 1.2);
         }
-        Turn();
+        // Turn();
         UseMotorDuty();
       }
     }
