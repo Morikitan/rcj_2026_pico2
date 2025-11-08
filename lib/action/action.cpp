@@ -20,7 +20,7 @@ struct GoalInformation MyGoal;
 struct GoalInformation OpponentGoal;
 int LeftWall, RightWall;
 float AngleX, AngleY, AngleZ;
-char LineSensorA[9];
+char LineSensorA[5];
 char LineSensorB[9];
 char LineSensorC[9];
 char LineSensorD[9];
