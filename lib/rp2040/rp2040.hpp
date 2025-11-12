@@ -9,7 +9,7 @@ void UseEncoder();
 void BLDCState(int pulse_us);
 void picoPioUartTx_program_putc(unsigned char c, bool even_parity);
 unsigned char picoPioUartRx_program_getc(bool even_parity,bool* parity_check);
-void ChangeMode(unsigned int gpio, unsigned long events);
+void Called(unsigned int gpio, unsigned long events);
 
 #ifdef __cplusplus
 }

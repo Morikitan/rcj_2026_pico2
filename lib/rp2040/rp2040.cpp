@@ -12,6 +12,7 @@
 
 uint8_t buffer[30];
 uint8_t EmptyBuffer[8];
+uint8_t data;
 
 PIO pio;
 uint sm_rx;
@@ -48,7 +49,7 @@ void RP2040Setup(){
     //割り込みの設定
     gpio_init(RP2040_UART_IRQpin);
     gpio_set_dir(RP2040_UART_IRQpin,GPIO_IN);
-    gpio_set_irq_enabled_with_callback(RP2040_UART_IRQpin,GPIO_IRQ_EDGE_RISE,true,&ChangeMode);
+    gpio_set_irq_enabled_with_callback(RP2040_UART_IRQpin,GPIO_IRQ_EDGE_RISE,true,&Called);
 }
 
 void OldUseEncoder(){
@@ -136,10 +137,26 @@ unsigned char picoPioUartRx_program_getc(bool even_parity,bool* parity_check) {
     // }
 }
 
-//rp2040からくるモード変更の要求に応じてモードを変更する関数
-void ChangeMode(unsigned int gpio, unsigned long events){
-    mode = (int)picoPioUartRx_program_getc(true,&parity_check);
-    if(parity_check == false){
-        picoPioUartTx_program_putc(0x96,true);
+//割り込みを処理する関数
+void Called(unsigned int gpio, unsigned long events){
+    data = picoPioUartRx_program_getc(true,&parity_check);
+    if(data <= 9){
+        //modeの変更
+        mode = data;
+        if(parity_check == false){
+            picoPioUartTx_program_putc(0x96,true);
+        }
+    }else if(data <= 12){
+        //スイッチの操作
+        if(data == 10){
+            //スイッチ1
+
+        }else if(data == 11){
+            //スイッチ2
+
+        }else if(data == 12){
+            //スイッチ3
+            
+        }
     }
 }

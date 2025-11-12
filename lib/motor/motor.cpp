@@ -10,6 +10,7 @@
 
 float output[4] = {0,0,0,0};
 float preMotorFrequency[4] = {0,0,0,0};
+double preTime[4];
 double pretime = 0;
 
 //足回りモーターのピンのモード設定
@@ -102,28 +103,52 @@ void analogWrite(int gpio,int duty){
     pwm_set_enabled(slice_num, true);
 }
 
-#define Kp 4.0
-
+#define Kp 1.0
+#define Ki 0.4
+#define Kd 0.2
+#define alpha 0.05 //学習率
+#define LeastVoltage 50
+float Vff[4] = {0,0,0,0};
+float integral[4] = {0,0,0,0};
 //エンコーダーの値を取得して、各モーターへの出力を設定する関数
 //タイヤの円周は6π≒19[cm] (参考)19/√2≒13.43
 //float speed[4] : 1秒当たりの回転数(負の値も〇)
 void EncoderAllMainMotorState(float speed[4]){
     UseEncoder();
-    
     for (int i = 0;i < 4;i++){
-        output[i] += (speed[i] - motorFrequency[i]) * Kp;
-
+        float dt = time_us_64() / 1000000.0 - preTime[i];
+        
+        integral[i] += (speed[i] - motorFrequency[i]) * dt;
+        
+        output[i] = Vff[i] + (speed[i] - motorFrequency[i]) * Kp + integral[i] * Ki + (motorFrequency[i] - preMotorFrequency[i]) * Kd;
+        if(motorFrequency[i] < 0.1 && motorFrequency[i] > -0.1){
+            if(speed[i] > 0){
+                output[i] += LeastVoltage;
+            }else if(speed[i] < 0){
+                output[i] -= LeastVoltage;
+            }
+        }
         //-255～255の範囲にする
-        if(output[i] > 255) output[i] = 255.0;
-        else if(output[i] < -255) output[i] = -255.0;
+        if(output[i] > 255) {
+            output[i] = 255.0;
+            integral[i] = 0;
+        }else if(output[i] < -255){
+            output[i] = -255.0;
+            integral[i] = 0;
+        } 
 
-        //preMotorFrequency[i] = motorFrequency[i];
+        Vff[i] += alpha * (speed[i] - motorFrequency[i]);
+
+        preMotorFrequency[i] = motorFrequency[i];
 
         if(output[i] >= 0)MainMotorState(i+1, 0, (int)output[i]);
         else              MainMotorState(i+1, 1, (int)(output[i] * -1.0)); 
+
+        preTime[i] = time_us_64() / 1000000.0;
     }
     //pretime = time_us_64() / 1000000.0;
 }
+
 
 //※使う前に必ずUseEncoderを実行する必要がある
 //既存のエンコーダーのデータからモーターへの出力を設定する関数
