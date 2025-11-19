@@ -9,6 +9,7 @@ void PinSetup();
 void Brake();
 void UseMotorDuty();
 void UseAllSensor();
+void TurnToTargetAngle(float angle);
 
 #ifdef __cplusplus
 }

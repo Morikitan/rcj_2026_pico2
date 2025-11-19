@@ -22,7 +22,7 @@ uint32_t BallPreTime = 0;
 uint32_t MainPreTime = 0;
 uint32_t PreTime1;
 bool isBreak = false;
-bool isMotorDutyLine = false;
+bool isTargetFrequencyLine = false;
 
 int MakaoLeastSpeed = 120; // 過去は80
 
@@ -35,7 +35,7 @@ void Attack(){
     if (BallAngle == 999) {
       //gpio_put(Bupin,0);
       if((time_us_32() - PreTime1) / 1000000.0 > 0.2){
-        isMotorDutyLine = false;
+        isTargetFrequencyLine = false;
       //マカオシュートの準備～実行
         //反転してるときはカメラの向きが変わる
         if(OpponentGoal.angle != 999 &&((AngleX <= 45 && 45 - AngleX < OpponentGoal.angle && OpponentGoal.angle < 180 - AngleX) ||
@@ -74,6 +74,7 @@ void Attack(){
          (180 < AngleX && AngleX <= 315 && ((540 - AngleX < OpponentGoal.angle && OpponentGoal.angle < 360) || 0 < OpponentGoal.angle && OpponentGoal.angle < 315 - AngleX)) ||
          (AngleX > 315 &&                    540 - AngleX < OpponentGoal.angle && OpponentGoal.angle < 675 - AngleX) )){
           //ゴールの右側の奥
+          
           isBreak = false;
           while (AngleX < 105 || 125 < AngleX) {
             UseLineSensor();
@@ -107,48 +108,11 @@ void Attack(){
           if (((AngleX < 180  && 180 - AngleX < OpponentGoal.angle && OpponentGoal.angle < 360 - AngleX)
           ||  (AngleX >= 180 && (540 - AngleX < OpponentGoal.angle && OpponentGoal.angle <= 360) || (0 < OpponentGoal.angle && OpponentGoal.angle < 360 - AngleX)))) {
             //ゴールの左側にいるとき
-            while (AngleX < 170 || 190 < AngleX) {
-              UseLineSensor();
-              UseGyroSensor();
-              if(300 > AngleX && AngleX > 60){
-                MainMotorState(1, 1, LeastTurnSpeed - 30);
-                MainMotorState(2, 1, LeastTurnSpeed - 30);
-                MainMotorState(3, 0, LeastTurnSpeed - 30);
-                MainMotorState(4, 0, LeastTurnSpeed - 30);
-              }else{
-                MainMotorState(1, 1, LeastTurnSpeed - 10);
-                MainMotorState(2, 1, LeastTurnSpeed - 10);
-                MainMotorState(3, 0, LeastTurnSpeed - 10);
-                MainMotorState(4, 0, LeastTurnSpeed - 10);
-              }
-              
-              if(AllLineSensor > ErorrLineSensor){
-                isBreak = true;
-                break;
-              }
-            }
+            TurnToTargetAngle(180.0);
             if(isBreak == false) Makao(false,80);  
           } else{
             //ゴールの右側にいるとき
-            while (AngleX < 170 || 190 < AngleX) {
-              UseLineSensor();
-              UseGyroSensor();
-              if(300 > AngleX && AngleX > 60){
-                MainMotorState(1, 0, LeastTurnSpeed - 30);
-                MainMotorState(2, 0, LeastTurnSpeed - 30);
-                MainMotorState(3, 1, LeastTurnSpeed - 30);
-                MainMotorState(4, 1, LeastTurnSpeed - 30);
-              }else{
-                MainMotorState(1, 0, LeastTurnSpeed - 10);
-                MainMotorState(2, 0, LeastTurnSpeed - 10);
-                MainMotorState(3, 1, LeastTurnSpeed - 10);
-                MainMotorState(4, 1, LeastTurnSpeed - 10);
-              }
-              if(AllLineSensor > ErorrLineSensor){
-                isBreak = true;
-                break;
-              }
-            }
+            TurnToTargetAngle(180.0);
             if(isBreak == false)Makao(true,280);
           }
           //gpio_put(Bupin,0);
@@ -257,18 +221,18 @@ void NewLineMove(){
         //-999.9の時は中央なので何もしない
         if(LineAngle == 999.9 || (FirstAngle > 0 && (FirstAngle - 4.71 < LineAngle && LineAngle < FirstAngle - 1.57)) || (FirstAngle == 0 && (LineAngle < -1.57 || 1.57 < LineAngle)) || (FirstAngle < 0 && (FirstAngle + 1.57 < LineAngle && LineAngle < FirstAngle + 4.71))){
           //円形が反応しないか、最初の向きと逆の時
-          MotorDuty[0] = LineDuty[0];
-          MotorDuty[1] = LineDuty[1];
-          MotorDuty[2] = LineDuty[2];
-          MotorDuty[3] = LineDuty[3];
+          TargetFrequency[0] = LineDuty[0];
+          TargetFrequency[1] = LineDuty[1];
+          TargetFrequency[2] = LineDuty[2];
+          TargetFrequency[3] = LineDuty[3];
         }else if(LineAngle != -999.9){
-          MotorDuty[0] = (int)(LineSpeed * (-cos(LineAngle) - sin(LineAngle)) / 1.2);
-          MotorDuty[1] = (int)(LineSpeed * (cos(LineAngle) - sin(LineAngle)) / 1.2);
-          MotorDuty[2] = (int)(LineSpeed * (-cos(LineAngle) - sin(LineAngle)) / 1.2);
-          MotorDuty[3] = (int)(LineSpeed * (cos(LineAngle) - sin(LineAngle)) / 1.2);
+          TargetFrequency[0] = (int)(LineSpeed * (-cos(LineAngle) - sin(LineAngle)) / 1.2);
+          TargetFrequency[1] = (int)(LineSpeed * (cos(LineAngle) - sin(LineAngle)) / 1.2);
+          TargetFrequency[2] = (int)(LineSpeed * (-cos(LineAngle) - sin(LineAngle)) / 1.2);
+          TargetFrequency[3] = (int)(LineSpeed * (cos(LineAngle) - sin(LineAngle)) / 1.2);
         }
         // Turn();
-        UseMotorDuty();
+        EncoderAllMainMotorState(TargetFrequency);
       }
     }
 }
@@ -360,11 +324,11 @@ void LineMove(){
           }
         }
       }
-      MotorDuty[0] = LineDuty[0];
-      MotorDuty[1] = LineDuty[1];
-      MotorDuty[2] = LineDuty[2];
-      MotorDuty[3] = LineDuty[3];
-      UseMotorDuty();
+      TargetFrequency[0] = LineDuty[0];
+      TargetFrequency[1] = LineDuty[1];
+      TargetFrequency[2] = LineDuty[2];
+      TargetFrequency[3] = LineDuty[3];
+      EncoderAllMainMotorState(TargetFrequency);
       MainPreTime = time_us_32() / 1000000.0;
       while (LineDeltaTime < 0.3) {
         UseAllSensor();
@@ -387,17 +351,17 @@ void ChaseBall(float angle,bool isMakao){
     {
       //ゴールの左側にいる
       if(180 < AngleX && AngleX < 210){
-        if (TurnSpeed * (AngleX - 180) / 180 > 20) {
-          AngleSpeed = -20;
+        if (TurnSpeed * (AngleX - 180) / 180 > MaxTurnFrequency) {
+          AngleSpeed = -MaxTurnFrequency;
         } else {
           AngleSpeed = TurnSpeed * (AngleX - 180) / 180 * -1;
         }
       }else{
         if(180 < AngleX){
-          AngleSpeed = 20;
+          AngleSpeed = MaxTurnFrequency;
         }else{
-          if (TurnSpeed * (180 - AngleX) / 180 > 20) {
-            AngleSpeed = 20;
+          if (TurnSpeed * (180 - AngleX) / 180 > MaxTurnFrequency) {
+            AngleSpeed = MaxTurnFrequency;
           } else {
             AngleSpeed = TurnSpeed * (180 - AngleX) / 180;
           }
@@ -405,59 +369,59 @@ void ChaseBall(float angle,bool isMakao){
       }
     }else{
       if(150 < AngleX && AngleX < 180){
-        if (TurnSpeed * (180 - AngleX) / 180 > 20) {
-          AngleSpeed = 20;
+        if (TurnSpeed * (180 - AngleX) / 180 > MaxTurnFrequency) {
+          AngleSpeed = MaxTurnFrequency;
         } else {
           AngleSpeed = TurnSpeed * (180 - AngleX) / 180;
         }
       }else{
         if(AngleX >= 180){
-          if (TurnSpeed * (AngleX - 180) / 180 > 20) {
-            AngleSpeed = -20;
+          if (TurnSpeed * (AngleX - 180) / 180 > MaxTurnFrequency) {
+            AngleSpeed = -MaxTurnFrequency;
           } else {
             AngleSpeed = TurnSpeed * (AngleX - 180) / 180 * -1;
           }
         }else{
-          AngleSpeed = -20;
+          AngleSpeed = -MaxTurnFrequency;
         }
         
       } 
     }
   }else{
+    //ボールを持っていない通常時
     if (AngleX > 180) {
-      if (TurnSpeed * (360 - AngleX) / 180 > 40) {
-        AngleSpeed = 40;
+      if (TurnSpeed * (360 - AngleX) / 180 > MaxTurnFrequency) {
+        AngleSpeed = MaxTurnFrequency;
       } else {
         AngleSpeed = TurnSpeed * (360 - AngleX) / 180;
       }
     } else {
-      if (TurnSpeed * AngleX / 180 > 40) {
-        AngleSpeed = -40;
+      if (TurnSpeed * AngleX / 180 > MaxTurnFrequency) {
+        AngleSpeed = -MaxTurnFrequency;
       } else {
         AngleSpeed = TurnSpeed * AngleX / 180 * -1;
       }
     }
   }
-  float SinSpeed2;
+  float SinSpeed2 = 0;
   float Gensoku;
   //ボールを持っているときに左右の動きの動きをつける
-  if(isMakao == true)SinSpeed2 = SinSpeed * sin(BallPreTime / 1000000.0);
-  else SinSpeed2 = 0;
+  //if(isMakao == true)SinSpeed2 = SinSpeed * sin(BallPreTime / 1000000.0);
   //壁際に近い時は減速する
-  if((0 < LeftWall && LeftWall < 100) || (0 < RightWall && RightWall < 60)) Gensoku = 0.88;
+  if((0 < LeftWall && LeftWall < 100) || (0 < RightWall && RightWall < 60)) Gensoku = 0.75;
   else Gensoku = 1.0;
 
-  MotorDuty[0] = (int)(DefaultSpeed * cos((angle * -1 + 45) * 3.1415 / 180) * Gensoku + AngleSpeed + SinSpeed2);
-  MotorDuty[1] = (int)(DefaultSpeed * sin((angle * -1 + 45) * 3.1415 / 180) * Gensoku + AngleSpeed - SinSpeed2);
-  MotorDuty[2] = (int)(DefaultSpeed * cos((angle * -1 + 45) * 3.1415 / 180) * Gensoku - AngleSpeed + SinSpeed2);
-  MotorDuty[3] = (int)(DefaultSpeed * sin((angle * -1 + 45) * 3.1415 / 180) * Gensoku - AngleSpeed - SinSpeed2);
+  TargetFrequency[0] = (MaxFrequency * cos((angle * -1 + 45) * 3.1415 / 180) * Gensoku + AngleSpeed + SinSpeed2);
+  TargetFrequency[1] = (MaxFrequency * sin((angle * -1 + 45) * 3.1415 / 180) * Gensoku + AngleSpeed - SinSpeed2);
+  TargetFrequency[2] = (MaxFrequency * cos((angle * -1 + 45) * 3.1415 / 180) * Gensoku - AngleSpeed + SinSpeed2);
+  TargetFrequency[3] = (MaxFrequency * sin((angle * -1 + 45) * 3.1415 / 180) * Gensoku - AngleSpeed - SinSpeed2);
 
-  UseMotorDuty();
+  EncoderAllMainMotorState(TargetFrequency);
 
   if (SerialWatch == "mot") {
     printf("BallAngle : %f AngleX : %f AngleSpeed : %f",BallAngle,AngleX,AngleSpeed);
-    printf(" motor1 : %d m2 : %d m3 : %d m4 : %d",MotorDuty[0],MotorDuty[1],MotorDuty[2],MotorDuty[3]);
-    printf(" 回転 : %d 縦 : %d 横 : %d\n",MotorDuty[0] + MotorDuty[1] - MotorDuty[2] - MotorDuty[3],MotorDuty[0] + MotorDuty[1] + MotorDuty[2] + MotorDuty[3],MotorDuty[0] - MotorDuty[1] + MotorDuty[2] - MotorDuty[3]);  //反時計が正
+    printf(" motor1 : %d m2 : %d m3 : %d m4 : %d",TargetFrequency[0],TargetFrequency[1],TargetFrequency[2],TargetFrequency[3]);
+    printf(" 回転 : %d 縦 : %d 横 : %d\n",TargetFrequency[0] + TargetFrequency[1] - TargetFrequency[2] - TargetFrequency[3],TargetFrequency[0] + TargetFrequency[1] + TargetFrequency[2] + TargetFrequency[3],TargetFrequency[0] - TargetFrequency[1] + TargetFrequency[2] - TargetFrequency[3]);  //反時計が正
   }
   BallPreTime = time_us_32();
 }
@@ -465,21 +429,21 @@ void ChaseBall(float angle,bool isMakao){
 void NonDribbler(float angle,bool isClockWise){
   if(isClockWise == true){
     if (AngleX > 210) {
-        AngleSpeed = 40;
+        AngleSpeed = MaxTurnFrequency;
     } else if(AngleX > 30){
-        AngleSpeed = -40;
+        AngleSpeed = -MaxTurnFrequency;
     }else{
-        AngleSpeed = 40;
+        AngleSpeed = MaxTurnFrequency;
     }
   }else{
     if (AngleX > 330) {
-       AngleSpeed = -40;
+       AngleSpeed = -MaxTurnFrequency;
     } else if(AngleX > 150){
       
-        AngleSpeed = 40;
+        AngleSpeed = MaxTurnFrequency;
       
     }else{
-        AngleSpeed = -40;
+        AngleSpeed = -MaxTurnFrequency;
       
     }
   }
@@ -488,20 +452,20 @@ void NonDribbler(float angle,bool isClockWise){
   //ボールを持っているときに左右の動きの動きをつける
   SinSpeed2 = 0;
   //壁際に近い時は減速する
-  if(LeftWall < 71 || RightWall < 55) Gensoku = 1.0;
+  if(LeftWall < GensokuDistance || RightWall < GensokuDistance) Gensoku = 0.75;
   else Gensoku = 1.0;
 
-  MotorDuty[0] = (int)(DefaultSpeed * cos((angle * -1 + 45) * 3.1415 / 180) * Gensoku + AngleSpeed + SinSpeed2);
-  MotorDuty[1] = (int)(DefaultSpeed * sin((angle * -1 + 45) * 3.1415 / 180) * Gensoku + AngleSpeed - SinSpeed2);
-  MotorDuty[2] = (int)(DefaultSpeed * cos((angle * -1 + 45) * 3.1415 / 180) * Gensoku - AngleSpeed + SinSpeed2);
-  MotorDuty[3] = (int)(DefaultSpeed * sin((angle * -1 + 45) * 3.1415 / 180) * Gensoku - AngleSpeed - SinSpeed2);
+  TargetFrequency[0] = (MaxFrequency * cos((angle * -1 + 45) * 3.1415 / 180) * Gensoku + AngleSpeed + SinSpeed2);
+  TargetFrequency[1] = (MaxFrequency * sin((angle * -1 + 45) * 3.1415 / 180) * Gensoku + AngleSpeed - SinSpeed2);
+  TargetFrequency[2] = (MaxFrequency * cos((angle * -1 + 45) * 3.1415 / 180) * Gensoku - AngleSpeed + SinSpeed2);
+  TargetFrequency[3] = (MaxFrequency * sin((angle * -1 + 45) * 3.1415 / 180) * Gensoku - AngleSpeed - SinSpeed2);
 
-  UseMotorDuty();
+  EncoderAllMainMotorState(TargetFrequency);
 
   if (SerialWatch == "mot") {
     printf("BallAngle : %f AngleX : %f AngleSpeed : %f",BallAngle,AngleX,AngleSpeed);
-    printf(" motor1 : %d m2 : %d m3 : %d m4 : %d",MotorDuty[0],MotorDuty[1],MotorDuty[2],MotorDuty[3]);
-    printf(" 回転 : %d 縦 : %d 横 : %d\n",MotorDuty[0] + MotorDuty[1] - MotorDuty[2] - MotorDuty[3],MotorDuty[0] + MotorDuty[1] + MotorDuty[2] + MotorDuty[3],MotorDuty[0] - MotorDuty[1] + MotorDuty[2] - MotorDuty[3]);  //反時計が正
+    printf(" motor1 : %d m2 : %d m3 : %d m4 : %d",TargetFrequency[0],TargetFrequency[1],TargetFrequency[2],TargetFrequency[3]);
+    printf(" 回転 : %d 縦 : %d 横 : %d\n",TargetFrequency[0] + TargetFrequency[1] - TargetFrequency[2] - TargetFrequency[3],TargetFrequency[0] + TargetFrequency[1] + TargetFrequency[2] + TargetFrequency[3],TargetFrequency[0] - TargetFrequency[1] + TargetFrequency[2] - TargetFrequency[3]);  //反時計が正
   }
   BallPreTime = time_us_32();
 }
@@ -542,20 +506,7 @@ void Makao(bool isClockWise,int TargetAngle){
     if(isBreak == false){
       Brake();
       sleep_ms(100);
-      while(10 < AngleX && AngleX < 350){
-        UseGyroSensor();
-        if(AngleX > 180){
-          MainMotorState(1,0,LeastTurnSpeed);
-          MainMotorState(2,0,LeastTurnSpeed);
-          MainMotorState(3,1,LeastTurnSpeed);
-          MainMotorState(4,1,LeastTurnSpeed);
-        }else{
-          MainMotorState(1,1,LeastTurnSpeed);
-          MainMotorState(2,1,LeastTurnSpeed);
-          MainMotorState(3,0,LeastTurnSpeed);
-          MainMotorState(4,0,LeastTurnSpeed);
-        }
-      }
+      TurnToTargetAngle(0.0);
     }
   }else{
     while (TargetAngle <= AngleX && AngleX < TargetAngle + 150) {
@@ -591,20 +542,7 @@ void Makao(bool isClockWise,int TargetAngle){
     if(isBreak == false){
       Brake();
       sleep_ms(100);
-      while(10 < AngleX && AngleX < 350){
-        UseGyroSensor();
-        if(AngleX > 180){
-          MainMotorState(1,0,LeastTurnSpeed);
-          MainMotorState(2,0,LeastTurnSpeed);
-          MainMotorState(3,1,LeastTurnSpeed);
-          MainMotorState(4,1,LeastTurnSpeed);
-        }else{
-          MainMotorState(1,1,LeastTurnSpeed);
-          MainMotorState(2,1,LeastTurnSpeed);
-          MainMotorState(3,0,LeastTurnSpeed);
-          MainMotorState(4,0,LeastTurnSpeed);
-        }
-      }
+      TurnToTargetAngle(0.0);
     }
   }
   BLDCState(1750);

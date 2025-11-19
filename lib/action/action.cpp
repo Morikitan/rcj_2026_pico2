@@ -96,3 +96,50 @@ void UseAllSensor(){
     UseGyroSensor();
     UseLineSensor();
 }
+
+#define TurnKp 0.10
+#define TurnKi 0.00
+#define TurnKd 0.00
+float TurnPreTime = 0;
+float TurnI = 0;
+float TurnP = 0;
+float TurnPreP = 0;
+float OutputFrequency = 0; //上から見て時計回りが正
+//特定の角度を向く関数
+void TurnToTargetAngle(float angle){
+    while((angle <= 5 && (angle + 5 < AngleX && AngleX < angle + 355)) ||
+          (5 < angle && angle <= 355 && (AngleX < angle - 5 || angle + 5 < AngleX)) ||
+          (355 <= angle && (angle - 355 < AngleX && AngleX < angle - 5)))
+    {   
+        UseGyroSensor();
+        
+        float now = time_us_64() / 1000000.0;
+        float dt = now - TurnPreTime;
+        if(now - TurnPreTime > 1){
+            //前回の処理から時間が大きくたっているときはいったんリセットする
+            TurnI = 0;
+            TurnPreP = 0;
+        }
+        //Proportional項の計算
+        TurnP = angle - AngleX;
+        while(TurnP > 180) TurnP -= 360;
+        while(TurnP < -180) TurnP += 360;
+        //Integral項の計算
+        TurnI += TurnP * dt;
+        //出力の決定
+        OutputFrequency = TurnP * TurnKp + TurnI * TurnKi + (TurnP - TurnPreP) * TurnKd / dt;
+        if(OutputFrequency > MaxFrequency){
+            OutputFrequency = MaxFrequency;
+            TurnI = 0;
+        } 
+        if(OutputFrequency < -MaxFrequency) {
+            OutputFrequency = -MaxFrequency; 
+            TurnI = 0;
+        }
+
+        TurnPreTime = now;
+        TurnPreP = TurnP;
+
+        EncoderAllMainMotorState((float[]){OutputFrequency,OutputFrequency,-OutputFrequency,-OutputFrequency});
+    }
+}

@@ -16,9 +16,10 @@ extern int mode;  //mode = 99で全部正転
 extern char isYellowMyGoal;
 
 //speed
-#define LeastTurnSpeed 100
-#define LeastSpeed 120
-#define TurnSpeed 120
+#define LeastVoltage 50
+#define MaxFrequency 8.5
+#define MaxTurnFrequency 1.0
+#define TurnSpeed 1.0
 #define DefaultSpeed 220
 #define DefaultSpeed1 170
 #define DefaultSpeed2 170
@@ -30,8 +31,12 @@ extern char isYellowMyGoal;
 #define LargeDefaultSpeed4 200
 #define LineSpeed 220
 #define DefenceSpeed 120
-#define SinSpeed 20
+#define SinSpeed 0.5
 #define VectorSpeed 30
+
+//for attack
+#define GensokuDistance 75
+#define Kff 30.0 //モーターのPID制御時に加えるff項の目標回転数にかける定数
 
 //main motor
 #define MainMotorPin1_1 1
@@ -42,7 +47,7 @@ extern char isYellowMyGoal;
 #define MainMotorPin3_2 1
 #define MainMotorPin4_1 1
 #define MainMotorPin4_2 1
-extern int MotorDuty[4];
+extern float TargetFrequency[4];
 
 //dribbler motor
 #define DribblerMotorpin1 1
