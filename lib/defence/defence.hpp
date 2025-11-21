@@ -6,6 +6,8 @@ extern "C" {
 
 void Defence();
 void DefenceStart();
+void JudgeLineShape();
+float GetCircleLineVector();
 
 #ifdef __cplusplus
 }

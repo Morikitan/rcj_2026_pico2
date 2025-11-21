@@ -68,7 +68,6 @@ void UseBallSensor(){
             if(i >= 16 - j){
                 Vector[VectorNumber] += (j - 1) * 11.25 + 22.5 * i;
                 Weight[VectorNumber] += j;
-                VectorNumber++;
                 break;
             }
             if(BallSensor[i + j] > 0){
@@ -93,9 +92,9 @@ void UseBallSensor(){
     for(int i = 0;i < VectorNumber;i++){
       VectorX -= sin(Vector[i] / 180.0 * 3.1415) * Weight[i];
       VectorY += cos(Vector[i] / 180.0 * 3.1415) * Weight[i];
+      TotalWeight += Weight[i];
       if(SerialWatch == "bal"){
         printf("%d : %f\n",Weight[i],Vector[i]);
-        TotalWeight += Weight[i];
       }
     }
     if(VectorNumber == 0){

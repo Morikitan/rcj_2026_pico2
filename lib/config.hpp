@@ -18,21 +18,15 @@ extern char isYellowMyGoal;
 //speed
 #define LeastVoltage 50
 #define MaxFrequency 8.5
-#define MaxTurnFrequency 1.0
-#define TurnSpeed 1.0
-#define DefaultSpeed 220
-#define DefaultSpeed1 170
-#define DefaultSpeed2 170
-#define DefaultSpeed3 170
-#define DefaultSpeed4 170
-#define LargeDefaultSpeed1 200
-#define LargeDefaultSpeed2 200
-#define LargeDefaultSpeed3 200
-#define LargeDefaultSpeed4 200
-#define LineSpeed 220
-#define DefenceSpeed 120
-#define SinSpeed 0.5
-#define VectorSpeed 30
+#define MaxTurnFrequency 4.0
+#define TurnFrequency 6.0
+#define MaxAddTurnFrequency 1.0
+#define AddTurnFrequency 2.0
+#define DefaultFrequency 220
+#define LineFrequency MaxFrequency
+#define DefenceFrequency 120
+#define SinFrequency 0.5
+#define VectorFrequency 30
 
 //for attack
 #define GensokuDistance 75

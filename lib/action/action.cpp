@@ -106,13 +106,18 @@ float TurnP = 0;
 float TurnPreP = 0;
 float OutputFrequency = 0; //上から見て時計回りが正
 //特定の角度を向く関数
-void TurnToTargetAngle(float angle){
+bool TurnToTargetAngle(float angle, bool isUseIsBreak){
     while((angle <= 5 && (angle + 5 < AngleX && AngleX < angle + 355)) ||
           (5 < angle && angle <= 355 && (AngleX < angle - 5 || angle + 5 < AngleX)) ||
           (355 <= angle && (angle - 355 < AngleX && AngleX < angle - 5)))
     {   
         UseGyroSensor();
-        
+        if(isUseIsBreak == true){
+            UseLineSensor();
+            if(AllLineSensor > ErorrLineSensor){
+                return true;
+            }
+        }
         float now = time_us_64() / 1000000.0;
         float dt = now - TurnPreTime;
         if(now - TurnPreTime > 1){
@@ -142,4 +147,5 @@ void TurnToTargetAngle(float angle){
 
         EncoderAllMainMotorState((float[]){OutputFrequency,OutputFrequency,-OutputFrequency,-OutputFrequency});
     }
+    return false;
 }
