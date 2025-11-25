@@ -24,8 +24,6 @@ uint32_t PreTime1;
 bool isBreak = false;
 bool isTargetFrequencyLine = false;
 
-int MakaoLeastFrequency = 120; // 過去は80
-
 void Attack(){
     //ライン上に乗っているかを判定する
     NewLineMove();
@@ -152,7 +150,6 @@ void NewLineMove(){
         DeltaTime += time_us_32() / 1000000.0 - MainPreTime;
         MainPreTime = time_us_32() / 1000000.0;
         LineAngle = GetCircleLineVector();
-        // LineAngle = GetLineAngle();
         //-999.9の時は中央なので何もしない
         if(LineAngle != -999.9 && (LineAngle == 999.9 || (FirstAngle < 90.0 && FirstAngle + 90 < LineAngle && LineAngle < FirstAngle + 270) || (90 <= FirstAngle && FirstAngle <= 270 && (LineAngle < FirstAngle - 90 || FirstAngle + 90 < LineAngle)) || (270 < FirstAngle && FirstAngle - 270 <= LineAngle && LineAngle <= FirstAngle - 90))){
           //円形が反応しないか、最初の向きと逆の時
@@ -166,7 +163,7 @@ void NewLineMove(){
           TargetFrequency[2] = LineFrequency * (sin((LineAngle - 90.0) / 180.0 * -3.1415) - cos((LineAngle - 90.0) / 180.0 * -3.1415)) / 1.4142;
           TargetFrequency[3] = LineFrequency * (sin((LineAngle - 90.0) / 180.0 * -3.1415) + cos((LineAngle - 90.0) / 180.0 * -3.1415)) / 1.4142;
         }
-        // Turn();
+        Turn();
         EncoderAllMainMotorState(TargetFrequency);
       }
     }
@@ -406,23 +403,47 @@ void NonDribbler(float angle,bool isClockWise){
 }
 
 void Makao(bool isClockWise,int TargetAngle){
-  Brake();
-  sleep_ms(2000);
+  // Brake();
+  // sleep_ms(2000);
+  //isBreakのリセットは不要
   if(isClockWise == true){
-    isBreak = TurnToTargetAngle(0.0,true);
+    while (TargetAngle - 150 < AngleX && AngleX <= TargetAngle) {
+      UseLineSensor();
+      UseGyroSensor();
+      EncoderAllMainMotorState((float[]){MakaoFrequency-1.0,MakaoFrequency-1.0,MakaoFrequency,MakaoFrequency});
+      if(AngleX > TargetAngle - 10){
+        // BLDCState(1000);
+      }
+      if(AllLineSensor > ErorrLineSensor){
+        isBreak = true;
+        break;
+      }
+    }
     if(isBreak == false){
       Brake();
       sleep_ms(100);
+      TurnToTargetAngle(0.0,false);
     }
   }else{
-    isBreak = TurnToTargetAngle(0.0,true);
+    while (TargetAngle <= AngleX && AngleX < TargetAngle + 150) {
+      UseLineSensor();
+      UseGyroSensor();
+      EncoderAllMainMotorState((float[]){-MakaoFrequency,-MakaoFrequency,-(MakaoFrequency-1.0),-(MakaoFrequency-1.0)});
+      if(AngleX < TargetAngle + 10){
+        //BLDCState(1000);
+      }
+      if(AllLineSensor > ErorrLineSensor){
+        isBreak = true;
+        break;
+      }
+    } 
     if(isBreak == false){
       Brake();
       sleep_ms(100);
+      TurnToTargetAngle(0.0,true);
     }
   }
-  BLDCState(1750);
-  //DribblerMotorState(0,DefaultDribblerFrequency);
+
   if(mode == 9 || mode == 10){
     mode -= 6;
     DefenceStart();

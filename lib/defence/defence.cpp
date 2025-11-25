@@ -49,16 +49,16 @@ float GetCircleLineVector(){
           //LineSensor[0]だけ反時計回り側にあるセンサを考える
           int k = 47;
           while(k >= 1 && LineSensorE[k] > 0){
-            k--;
             DoneLineSensor[k] = true;
+            k--;
           }
           Vector[VectorNumber] -= (47 - k) * 3.75;
           Weight[VectorNumber] += 47 - k;
         }
         int j = 1;
         while(i + j <= 47 && LineSensorE[i+j] > 0){
-            j++;
             DoneLineSensor[i + j] = true;
+            j++;
         }
         Vector[VectorNumber] += (j - 1)*3.75 + 7.5 * i;
         Weight[VectorNumber] += j;
@@ -86,8 +86,9 @@ float GetCircleLineVector(){
     VectorX /= (float)VectorNumber;
     VectorY /= (float)VectorNumber;
   }
-  result = atan2(VectorY,VectorX) / 3.1415 * 180;
-  if(result < 0) result += 360.0;
+  result = atan2(VectorY,VectorX) / 3.1415 * -180 + 90 - 3.75;
+  while(result < 0) result += 360.0;
+  while(result >= 360) result -= 360.0;
   float VectorAbsoluteValue = sqrt(VectorX * VectorX + VectorY * VectorY);
 
   if(SerialWatch == "vec"){
@@ -101,7 +102,7 @@ float GetCircleLineVector(){
     }
   }
   //-π～πまででもとめられる。正面がπ/2になる
-  if(VectorX == 999 && VectorX == 999){
+  if(VectorX == 999 && VectorY == 999){
     return -999.9;
   }else if(VectorX == 0 && VectorY == 0){
     return 999.9;
@@ -111,19 +112,19 @@ float GetCircleLineVector(){
 }
 
 float _TurnFrequency;
-//機体の回転方向の回転数を加算する
+//正面を向くための機体の回転方向の回転数を加算する
 void Turn(){
   if (AngleX > 180) {
-    if(TurnFrequency * (360 - AngleX) / 180 < 20){
+    if(AddTurnFrequency * (360 - AngleX) / 180 < MaxAddTurnFrequency){
       _TurnFrequency = TurnFrequency * (360 - AngleX) / 180;
     }else{
-      _TurnFrequency = 20;
+      _TurnFrequency = MaxAddTurnFrequency;
     }
   } else {
-    if(TurnFrequency * AngleX / 180 < 20){
-      _TurnFrequency = TurnFrequency * AngleX / 180 * -1;
+    if(AddTurnFrequency * AngleX / 180 < MaxAddTurnFrequency){
+      _TurnFrequency = AddTurnFrequency * AngleX / 180 * -1;
     }else{
-      _TurnFrequency = -20;
+      _TurnFrequency = -MaxAddTurnFrequency;
     }
   }
   TargetFrequency[0] += _TurnFrequency;

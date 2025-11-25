@@ -117,7 +117,7 @@ void UseBallSensor(){
       }
     }
     //角度の微調整
-    if(BallAngle == 348.75){
+    if(346 < BallAngle && BallAngle < 350){
       BallAngle = 0;
     }else if(BallAngle != 999){
       BallAngle += 11.25;

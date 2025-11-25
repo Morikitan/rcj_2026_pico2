@@ -8,6 +8,7 @@ void Defence();
 void DefenceStart();
 void JudgeLineShape();
 float GetCircleLineVector();
+void Turn();
 
 #ifdef __cplusplus
 }

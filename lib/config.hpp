@@ -22,7 +22,7 @@ extern char isYellowMyGoal;
 #define TurnFrequency 6.0
 #define MaxAddTurnFrequency 1.0
 #define AddTurnFrequency 2.0
-#define DefaultFrequency 220
+#define MakaoFrequency 6.0
 #define LineFrequency MaxFrequency
 #define DefenceFrequency 120
 #define SinFrequency 0.5
