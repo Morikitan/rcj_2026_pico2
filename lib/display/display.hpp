@@ -9,7 +9,7 @@ extern "C" {
 #endif
 
 void DisplaySetup();
-void WriteWordOnDisplay(char x,char y,char *word,char size);
+void WriteWordOnDisplay(char x,char y,char *word,char size,bool isFirstLine,bool isLastLine);
 uint8_t u8x8_byte_pico_i2c(u8x8_t *u8x8, uint8_t msg,uint8_t arg_int, void *arg_ptr);
 uint8_t u8x8_gpio_and_delay_cb(u8x8_t *u8x8, uint8_t msg,uint8_t arg_int, void *arg_ptr) ;
 

@@ -29,6 +29,7 @@ int AllLineSensorA, AllLineSensorB, AllLineSensorC, AllLineSensorD, AllLineSenso
 int ErorrLineSensor;
 bool isMotorClockWise[4];
 float motorFrequency[4];
+char DisplayBuffer[128];
 
 //変数の初期化
 void VariableSetup(){

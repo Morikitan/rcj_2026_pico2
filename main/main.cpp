@@ -34,19 +34,12 @@ int main()
         //UseEncoder();
         //picoPioUartRx_program_putc(0x65,true);
         
-        // bool parity_check;
-        // unsigned char data = picoPioUartRx_program_getc(true,&parity_check);
-        // if(parity_check == true){
-            // printf("結果 %x\n",data);
-        // }
-        //printf("%d\n",(int)gpio_get(12));
-        if(gpio_get(RP2040_UART_TXpin) == true){
-            printf("HIGH\n");
-        }else{
-            printf("LOW\n");
+        bool parity_check;
+        unsigned char data = picoPioUartRx_program_getc(true,&parity_check);
+        if(parity_check == true){
+            printf("結果 %x\n",data);
         }
-        
-        sleep_ms(100);
+        printf("%d\n",(int)gpio_get(12));
         if(mode == 1 || mode == 2){
             Attack();
         }

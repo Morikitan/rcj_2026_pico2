@@ -352,9 +352,13 @@ void ChaseBall(float angle,bool isMakao){
   EncoderAllMainMotorState(TargetFrequency);
 
   if (SerialWatch == "mot") {
-    printf("BallAngle : %f AngleX : %f AngleFrequency : %f",BallAngle,AngleX,AngleFrequency);
-    printf(" motor1 : %d m2 : %d m3 : %d m4 : %d",TargetFrequency[0],TargetFrequency[1],TargetFrequency[2],TargetFrequency[3]);
-    printf(" 回転 : %d 縦 : %d 横 : %d\n",TargetFrequency[0] + TargetFrequency[1] - TargetFrequency[2] - TargetFrequency[3],TargetFrequency[0] + TargetFrequency[1] + TargetFrequency[2] + TargetFrequency[3],TargetFrequency[0] - TargetFrequency[1] + TargetFrequency[2] - TargetFrequency[3]);  //反時計が正
+    if(isUseDisplay == true){
+      
+    }else{
+      printf("BallAngle : %f AngleX : %f AngleFrequency : %f",BallAngle,AngleX,AngleFrequency);
+      printf(" motor1 : %d m2 : %d m3 : %d m4 : %d",TargetFrequency[0],TargetFrequency[1],TargetFrequency[2],TargetFrequency[3]);
+      printf(" 回転 : %d 縦 : %d 横 : %d\n",TargetFrequency[0] + TargetFrequency[1] - TargetFrequency[2] - TargetFrequency[3],TargetFrequency[0] + TargetFrequency[1] + TargetFrequency[2] + TargetFrequency[3],TargetFrequency[0] - TargetFrequency[1] + TargetFrequency[2] - TargetFrequency[3]);  //反時計が正
+    }
   }
   BallPreTime = time_us_32();
 }
