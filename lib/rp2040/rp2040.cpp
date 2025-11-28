@@ -1,18 +1,18 @@
+#include "rp2040.hpp"
+#include "../config.hpp"
+#include "hardware/gpio.h"
+#include "hardware/pio.h"
+#include "hardware/spi.h"
+#include "hardware/sync.h"
+#include "pico/stdlib.h"
+#include "picoPioUart.pio.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-#include "rp2040.hpp"
-#include "pico/stdlib.h"
-#include "hardware/gpio.h"
-#include "hardware/spi.h"
-#include "hardware/pio.h"
-#include "hardware/sync.h"
-#include "picoPioUart.pio.h"
-#include "../config.hpp"
 
 uint8_t buffer[30];
 uint8_t EmptyBuffer[8];
-uint8_t data;
+uint8_t data2;
 
 PIO pio;
 uint sm_rx;
@@ -21,7 +21,6 @@ uint offset;
 uint offset2;
 bool parity_check;
 unsigned char encoderData[8];
-int mode;
 
 //pioをつかったUARTの初期設定
 void RP2040Setup(){
@@ -139,22 +138,22 @@ unsigned char picoPioUartRx_program_getc(bool even_parity,bool* parity_check) {
 
 //割り込みを処理する関数
 void Called(unsigned int gpio, unsigned long events){
-    data = picoPioUartRx_program_getc(true,&parity_check);
-    if(data <= 9){
+    data2 = picoPioUartRx_program_getc(true,&parity_check);
+    if(data2 <= 9){
         //modeの変更
-        mode = data;
+        mode = data2;
         if(parity_check == false){
             picoPioUartTx_program_putc(0x96,true);
         }
-    }else if(data <= 12){
+    }else if(data2 <= 12){
         //スイッチの操作
-        if(data == 10){
+        if(data2 == 10){
             //スイッチ1
 
-        }else if(data == 11){
+        }else if(data2 == 11){
             //スイッチ2
 
-        }else if(data == 12){
+        }else if(data2 == 12){
             //スイッチ3
             
         }

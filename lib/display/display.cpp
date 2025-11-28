@@ -1,12 +1,11 @@
-
-// u8g2_user_impl.cpp
-#include "hardware/i2c.h"
-#include "hardware/gpio.h"
-#include "pico/stdlib.h"
 #include "display.hpp"
 #include "../config.hpp"
+#include "hardware/gpio.h"
+#include "hardware/i2c.h"
+#include "pico/stdlib.h"
 #include "u8g2.h"
 #include <string>
+
 
 u8g2_t u8g2;
 

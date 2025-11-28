@@ -1,9 +1,9 @@
-#include <stdio.h>
-#include "../config.hpp"
 #include "gyro.hpp"
-#include "hardware/i2c.h"
+#include "../config.hpp"
 #include "hardware/gpio.h"
+#include "hardware/i2c.h"
 #include "pico/stdlib.h"
+#include <stdio.h>
 
 #define BNO_ADDRESS 0x28
 

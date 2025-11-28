@@ -1,20 +1,20 @@
 #include "ball.hpp"
-#include "../config.hpp"
-#include "pico/stdlib.h"
 #include "rp2040.hpp"
-#include "math.h"
+#include "../config.hpp"
 #include "hardware/gpio.h"
 #include "hardware/i2c.h"
+#include "pico/stdlib.h"
+#include <math.h>
 
-uint8_t buffer[32];
+uint8_t buffer2[32];
 uint16_t BallSensor[16];
 
 bool DoneBallSensor[16];
-float Vector[8];
-int Weight[8];
-int TotalWeight;
+float BallVector[8];
+int BallWeight[8];
+int BallTotalWeight;
 float VectorX,VectorY;
-int VectorNumber;
+int BallVectorNumber;
 
 //ボールセンサーの初期化
 void BallSetup(){
@@ -30,21 +30,21 @@ void UseBallSensor(){
     //ボール検知センサを調べる
     i2c_write_blocking(BallI2C,0x42,(uint8_t[]){0x01},1,false);
     while(!i2c_get_read_available(BallI2C)){}
-    i2c_read_blocking(BallI2C,0x42,buffer,32,false);
+    i2c_read_blocking(BallI2C,0x42,buffer2,32,false);
     //データを16bitのもとの形に直す
     for(int i = 0;i < 16;i++){
-        BallSensor[i] = ((uint16_t)buffer[i*2] << 8) | buffer[i*2 + 1];
+        BallSensor[i] = ((uint16_t)buffer2[i*2] << 8) | buffer2[i*2 + 1];
     }
     
     //データを使える形に変換する
     for(int i = 0;i < 16;i++){
       DoneBallSensor[i] = false;
       if(i < 8){
-        Vector[i] = 0;
-        Weight[i] = 0;
+        BallVector[i] = 0;
+        BallWeight[i] = 0;
       }
     }  
-    VectorNumber = 0;
+    BallVectorNumber = 0;
     for(int i = 0;i < 16;i++){
       if(BallSensor[i] > 0 && DoneBallSensor[i] == false){
         if(i == 0){
@@ -53,12 +53,12 @@ void UseBallSensor(){
             if(BallSensor[j] > 0){
                 DoneBallSensor[j] = true;
                 if(j == 11){
-                    Vector[VectorNumber] -= (16 - j) * 11.25;
-                    Weight[VectorNumber] += 16 - j;
+                    BallVector[BallVectorNumber] -= (16 - j) * 11.25;
+                    BallWeight[BallVectorNumber] += 16 - j;
                 }
             }else{
-                Vector[VectorNumber] -= (15 - j) * 11.25;
-                Weight[VectorNumber] += 15 - j;
+                BallVector[BallVectorNumber] -= (15 - j) * 11.25;
+                BallWeight[BallVectorNumber] += 15 - j;
                 break;
             }
           }
@@ -66,43 +66,43 @@ void UseBallSensor(){
         for(int j = 1;j <= 5;j++){
             //存在しない値を考えないようにする
             if(i >= 16 - j){
-                Vector[VectorNumber] += (j - 1) * 11.25 + 22.5 * i;
-                Weight[VectorNumber] += j;
+                BallVector[BallVectorNumber] += (j - 1) * 11.25 + 22.5 * i;
+                BallWeight[BallVectorNumber] += j;
                 break;
             }
             if(BallSensor[i + j] > 0){
                 DoneBallSensor[i + j] = true;
                 if(j == 5){
-                    Vector[VectorNumber] += 56.25 + 22.5 * i;
-                    Weight[VectorNumber] += 6;
+                    BallVector[BallVectorNumber] += 56.25 + 22.5 * i;
+                    BallWeight[BallVectorNumber] += 6;
                 }
             }else{
-                Vector[VectorNumber] += (j - 1)*11.25 + 22.5 * i;
-                Weight[VectorNumber] += j;
+                BallVector[BallVectorNumber] += (j - 1)*11.25 + 22.5 * i;
+                BallWeight[BallVectorNumber] += j;
                 break;
             }
         }
-        VectorNumber++;
+        BallVectorNumber++;
         DoneBallSensor[i] = true;
       }
     }
     //ベクトルの合成をする
     if(SerialWatch == "bal")printf(" ベク ");
-    VectorX = 0;VectorY = 0;TotalWeight = 0;
-    for(int i = 0;i < VectorNumber;i++){
-      VectorX -= sin(Vector[i] / 180.0 * 3.1415) * Weight[i];
-      VectorY += cos(Vector[i] / 180.0 * 3.1415) * Weight[i];
-      TotalWeight += Weight[i];
+    VectorX = 0;VectorY = 0;BallTotalWeight = 0;
+    for(int i = 0;i < BallVectorNumber;i++){
+      VectorX -= sin(BallVector[i] / 180.0 * 3.1415) * BallWeight[i];
+      VectorY += cos(BallVector[i] / 180.0 * 3.1415) * BallWeight[i];
+      BallTotalWeight += BallWeight[i];
       if(SerialWatch == "bal"){
-        printf("%d : %f\n",Weight[i],Vector[i]);
+        printf("%d : %f\n",BallWeight[i],BallVector[i]);
       }
     }
-    if(VectorNumber == 0){
+    if(BallVectorNumber == 0){
       VectorX = 999;
       VectorY = 999;
     }else{
-      VectorX /= (float)TotalWeight;
-      VectorY /= (float)TotalWeight;
+      VectorX /= (float)BallTotalWeight;
+      VectorY /= (float)BallTotalWeight;
     }
 
     if(VectorX == 999 && VectorY == 999){

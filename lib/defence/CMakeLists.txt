@@ -9,7 +9,7 @@ target_include_directories(defence PRIVATE ../gyro)
 target_include_directories(defence PRIVATE ../ball)
 target_include_directories(defence PRIVATE ../line)
 target_include_directories(defence PRIVATE ../camera)
-target_include_directories(defence PRIVATE ../pico)
+target_include_directories(defence PRIVATE ../rp2040)
 
 target_link_libraries(defence pico_stdlib hardware_pwm hardware_gpio)
 

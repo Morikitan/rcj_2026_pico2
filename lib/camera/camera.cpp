@@ -1,15 +1,14 @@
 #include "camera.hpp"
-#include "pico/stdlib.h"
-#include "hardware/uart.h"
 #include "../config.hpp"
-#include <stdio.h>
+#include "hardware/uart.h"
+#include "pico/stdlib.h"
 #include <math.h>
+#include <stdio.h>
 
 int CameraDataNumber = 1;
 int HowManyData = 0;
 uint8_t CameraData1[] = {0,0,0,0,0,0,0};
 uint8_t CameraData[] = {0,0,0,0,0,0,0};
-uint8_t data = 0;
 
 //カメラの初期化
 void CameraSetup(){

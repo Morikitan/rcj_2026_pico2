@@ -17,6 +17,7 @@ extern char isYellowMyGoal;
 
 //speed
 #define LeastVoltage 50
+#define DefaultFrequency MaxFrequency / 2.0
 #define MaxFrequency 8.5
 #define MaxTurnFrequency 4.0
 #define TurnFrequency 6.0
@@ -24,7 +25,7 @@ extern char isYellowMyGoal;
 #define AddTurnFrequency 2.0
 #define MakaoFrequency 6.0
 #define LineFrequency MaxFrequency
-#define DefenceFrequency 120
+#define DefenceFrequency 4.0
 #define SinFrequency 0.5
 #define VectorFrequency 30
 

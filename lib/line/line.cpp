@@ -1,10 +1,9 @@
-#include <stdio.h>
 #include "line.hpp"
-#include "pico/stdlib.h"
 #include "../config.hpp"
 #include "hardware/uart.h"
+#include "pico/stdlib.h"
+#include <stdio.h>
 
-uint8_t buffer[32];
 uint8_t data;
 uint8_t LineRawData[11];
 

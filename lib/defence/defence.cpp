@@ -1,23 +1,47 @@
-#include "defence.hpp"
 #include "action.hpp"
-#include "motor.hpp"
-#include "line.hpp"
-#include "gyro.hpp"
+#include "ball.hpp"
 #include "camera.hpp"
+#include "defence.hpp"
+#include "gyro.hpp"
+#include "line.hpp"
+#include "motor.hpp"
 #include "../config.hpp"
-#include "pico/stdlib.h"
-#include "hardware/pwm.h"
 #include "hardware/gpio.h"
-#include <stdio.h>
+#include "hardware/pwm.h"
+#include "pico/stdlib.h"
 #include <math.h>
+#include <stdio.h>
 
 int DoneLineSensor[48];
 float Vector[24];
 int Weight[24];
 int VectorNumber;
+float DefenceAngle = 0;
+float DefenceBallTime = 0;
 
 void Defence(){
+  UseAllSensor();
+  DefenceAngle = GetCircleLineVector();
 
+  if(BallAngle == 999){
+      if(time_us_32() / 1000000.0 - DefenceBallTime > 1){
+        while(time_us_32() / 1000000.0 - DefenceBallTime < 2 && (mode == 3 || mode == 4)){
+          UseGyroSensor();
+          TargetFrequency[0] = DefaultFrequency;
+          TargetFrequency[1] = DefaultFrequency;
+          TargetFrequency[2] = DefaultFrequency;
+          TargetFrequency[3] = DefaultFrequency;
+          Turn();
+          EncoderAllMainMotorState(TargetFrequency);
+          if (SerialWatch == "def") {
+            printf("ボールを持っています\n");
+          }
+        }
+        DefenceBallTime = time_us_32() / 1000000.0;
+      }
+    }else{
+      DefenceBallTime = time_us_32() / 1000000.0;
+    }
 }
 
 //ディフェンスの初期移動に戻る
@@ -31,7 +55,6 @@ void JudgeLineShape(){
 }
 
 float result;
-//反時計回りに配置されているうえに0のいちが3.75度ずれていることが発覚いたしました。
 //最後は時計回りの0～360で出力
 float GetCircleLineVector(){
     //データを使える形に変換する

@@ -1,12 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
 #include "motor.hpp"
 #include "rp2040.hpp"
-#include "pico/stdlib.h"
+#include "../config.hpp"
 #include "hardware/gpio.h"
 #include "hardware/pwm.h"
-#include "../config.hpp"
+#include "pico/stdlib.h"
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 float output[4] = {0,0,0,0};
 float preMotorFrequency[4] = {0,0,0,0};
