@@ -96,7 +96,7 @@ extern int AllLineSensorA, AllLineSensorB, AllLineSensorC, AllLineSensorD, AllLi
 extern int ErorrLineSensor;
 
 //UART for RP2040
-#define RP2040_UART_TXpin 43
+#define RP2040_UART_TXpin 30 //J12の右端
 #define RP2040_UART_RXpin 44
 #define RP2040_UART_IRQpin 45
 #define SERIAL_BAUD 125000

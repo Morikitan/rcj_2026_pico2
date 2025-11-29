@@ -117,8 +117,9 @@ unsigned char picoPioUartRx_program_getc(bool even_parity,bool* parity_check) {
     // }else{
      while (pio_sm_is_rx_fifo_empty(pio, sm_rx)) {
         tight_loop_contents();
-        //printf("待機中\n");
+        // printf("待機中");
      }
+     
     uint32_t c32 = pio_sm_get(pio, sm_rx);
 
     c32 >>= 23;
