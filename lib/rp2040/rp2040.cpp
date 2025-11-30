@@ -36,14 +36,16 @@ void RP2040Setup(){
 
     sm_rx = 0;
 
+    //使うピン番号が32以上なので必要な処理群
+    pio_set_gpio_base(pio,16);
+
     offset = pio_add_program(pio, &picoPioUartRx_program);
-    picoPioUartRx_program_init(pio, sm_rx, offset, (uint)RP2040_UART_RXpin, SERIAL_BAUD);
+    picoPioUartRx_program_init(pio, sm_rx, offset, (uint)(RP2040_UART_RXpin), SERIAL_BAUD);
 
     // 使うSMを指定する(送信と受信では別のSMを使う)
     sm_tx = 1;
-
     offset2 = pio_add_program(pio, &picoPioUartTx_program);
-    picoPioUartTx_program_init(pio, sm_tx, offset2, (uint)RP2040_UART_TXpin, SERIAL_BAUD);
+    picoPioUartTx_program_init(pio, sm_tx, offset2, (uint)(RP2040_UART_TXpin), SERIAL_BAUD);
 
     //割り込みの設定
     gpio_init(RP2040_UART_IRQpin);

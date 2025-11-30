@@ -62,10 +62,12 @@ static inline void picoPioUartRx_program_init(PIO pio, uint sm, uint offset, uin
 
 static inline void picoPioUartTx_program_init(PIO pio, uint sm, uint offset, uint pin_tx, uint baud) {
     // マスクしてピンを設定します
-    pio_sm_set_pins_with_mask(pio, sm, 1u << pin_tx, 1u << pin_tx);
+    //pio_sm_set_pins_with_mask64(pio, sm, 1u << (pin_tx), 1u << (pin_tx));
 
     // マスクしてピン方向を設定します
-    pio_sm_set_pindirs_with_mask(pio, sm, 1u << pin_tx, 1u << pin_tx);
+    //pio_sm_set_pindirs_with_mask64(pio, sm, 1u << (pin_tx), 1u << (pin_tx));
+
+    pio_sm_set_consecutive_pindirs(pio, sm, pin_tx, 1, true);
 
     // GPIO初期化します
     pio_gpio_init(pio, pin_tx);
@@ -80,10 +82,15 @@ static inline void picoPioUartTx_program_init(PIO pio, uint sm, uint offset, uin
     sm_config_set_out_shift(&c, true, false, 9);
 
     // 出力に設定します(pin_tx = GPIO0)
-    sm_config_set_out_pins(&c, pin_tx, 1);
-    // サイドセットピンを設定します(pin_tx = GPIO0)
-    // （出力ピンとサイドセットピンに同じものを指定することも可能）
-    sm_config_set_sideset_pins(&c, pin_tx);
+    sm_config_set_out_pins(&c, pin_tx ,1);
+    //sm_config_set_out_pin_base(&c, pin_tx);
+
+    // サイドセットピンを設定します(RP2040やRP2350A用)
+  //sm_config_set_sideset_pins(&c, pin_tx);
+    //RP2350B用
+    //sm_config_set_sideset_pins(&c, 0);
+    sm_config_set_sideset_pin_base(&c,pin_tx);
+
 
     // 1クロックを通信速度の8倍に設定します
     // （クロック8個で1ビット分の幅になる仕様）
