@@ -1,7 +1,5 @@
 add_library(action action.cpp)
 
-target_link_libraries(action pico_stdlib hardware_gpio hardware_adc)
-
 target_include_directories(action PRIVATE ../ball)
 target_include_directories(action PRIVATE ../camera)
 target_include_directories(action PRIVATE ../defence)
@@ -10,6 +8,7 @@ target_include_directories(action PRIVATE ../gyro)
 target_include_directories(action PRIVATE ../line)
 target_include_directories(action PRIVATE ../motor)
 
+target_link_libraries(action pico_stdlib hardware_gpio hardware_adc)
 
 #display.hppの中のu8g2ライブラリを有効にする
 target_include_directories(action PRIVATE

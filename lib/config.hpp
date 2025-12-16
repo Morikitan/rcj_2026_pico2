@@ -33,6 +33,9 @@ extern char isYellowMyGoal;
 #define GensokuDistance 75
 #define Kff 30.0 //モーターのPID制御時に加えるff項の目標回転数にかける定数
 
+//for defence
+#define GoalDistance 75 //ゴールの線上にいるときの距離。ゴールの内側にいるか外側にいるかの区別をする用
+
 //main motor
 #define MainMotorPin1_1 1
 #define MainMotorPin1_2 1
@@ -52,7 +55,7 @@ extern float TargetFrequency[4];
 #define BallI2C i2c0
 #define BallSDApin 16
 #define BallSCLpin 17
-extern float BallAngle;  //999.0でボール持ってる。-999.0で行方不明
+extern float BallAngle;  //時計回り0～360° 999.0でボール持ってる。-999.0で行方不明
 extern int BallDistance;
 
 //camera
@@ -62,7 +65,7 @@ extern int BallDistance;
 struct GoalInformation{
     int X;
     int Y;
-    float angle;
+    float angle; //正面が0度で時計回りの角度
     float distance;
 };
 extern struct GoalInformation MyGoal;
@@ -74,14 +77,15 @@ extern int LeftWall, RightWall;
 #define DisplaySDApin 2
 #define DisplaySCLpin 3
 #define isUseDisplay true
-extern char DisplayBuffer[128];
+#define DisplayBufferSize 200
+extern char DisplayBuffer[DisplayBufferSize];
 
 //gyro sensor
 #define GyroI2C i2c1
 #define GyroSDApin 14
 #define GyroSCLpin 15
 
-extern float AngleX, AngleY, AngleZ;
+extern float AngleX, AngleY, AngleZ; //時計回り0～360°
 
 //line sensor
 #define LineUart uart0

@@ -1,3 +1,4 @@
+#include "display.hpp"
 #include "line.hpp"
 #include "../config.hpp"
 #include "hardware/uart.h"

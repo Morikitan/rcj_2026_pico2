@@ -29,13 +29,14 @@ int AllLineSensorA, AllLineSensorB, AllLineSensorC, AllLineSensorD, AllLineSenso
 int ErorrLineSensor;
 bool isMotorClockWise[4];
 float motorFrequency[4];
-char DisplayBuffer[128];
+char DisplayBuffer[DisplayBufferSize];
 
 //変数の初期化
 void VariableSetup(){
     /******************
     ang 機体の角度(AngleX)
     bal ボールセンサーの値(BallDistance,BallAngle)
+    bav ボールセンサのベクトルの値(消すかも)
     cam カメラの値(自分と敵のゴールの距離と向き、壁との距離)
     lin ラインセンサーの値(0か1で受け取る)
     mot モーターに加わる電圧(AngleXもセットで)
@@ -134,4 +135,30 @@ bool TurnToTargetAngle(float angle, bool isUseIsBreak){
         EncoderAllMainMotorState((float[]){OutputFrequency,OutputFrequency,-OutputFrequency,-OutputFrequency});
     }
     return false;
+}
+
+//正面0度時計回りの度数法の角度を座標平面の弧度法(正面π/2反時計回り)に変換する。
+//定義域は 0 <= θ < 2π
+float radian(float angle){
+    if(angle <= 90){
+        return (angle * -1.0 + 90) * 3.1415 / 180;
+    }else{
+        return (angle * -1.0 + 450) * 3.1415 / 180;
+    }
+}
+
+//正面0度時計回りの度数法の角度を座標平面の弧度法(ただし正面π/4反時計回り)に変換する。
+//つまり正面が通常より時計回りに45度回転した角度になる
+//定義域は 0 <= θ < 2π
+float radian45(float angle){
+    if(angle <= 45){
+        return (angle * -1.0 + 45) * 3.1415 / 180;
+    }else{
+        return (angle * -1.0 + 405) * 3.1415 / 180;
+    }
+}
+
+//最高速度を測定するプログラム
+void MeasureMaxSpeed(){
+
 }

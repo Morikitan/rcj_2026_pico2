@@ -1,3 +1,4 @@
+#include "display.hpp"
 #include "rp2040.hpp"
 #include "../config.hpp"
 #include "hardware/gpio.h"

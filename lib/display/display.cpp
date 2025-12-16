@@ -37,7 +37,7 @@ void DisplaySetup(){
 // size : 文字の大きさ。8 or 10 or 12 or 14 or 18 or 24
 // isFirstLine : 最初の行かどうか
 // isLastLine : 最後の行かどうか
-void WriteWordOnDisplay(char x,char y,char *word,char size,bool isFirstLine,bool isLastLine){
+void WriteTextOnDisplay(char x,char y,const char* text,char size,bool isFirstLine,bool isLastLine){
     // バッファをクリア
     if(isFirstLine == true)u8g2_ClearBuffer(&u8g2);                  
     // フォント選択
@@ -49,7 +49,7 @@ void WriteWordOnDisplay(char x,char y,char *word,char size,bool isFirstLine,bool
     else if(size == 24)u8g2_SetFont(&u8g2, u8g2_font_ncenB24_tr); 
     else return;
     // 文字列描画
-    u8g2_DrawStr(&u8g2, x, y, word); 
+    u8g2_DrawStr(&u8g2, x, y, text); 
     // 表示に反映
     if(isLastLine == true)u8g2_SendBuffer(&u8g2);                   
 }

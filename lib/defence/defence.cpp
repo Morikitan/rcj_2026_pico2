@@ -2,6 +2,7 @@
 #include "ball.hpp"
 #include "camera.hpp"
 #include "defence.hpp"
+#include "display.hpp"
 #include "gyro.hpp"
 #include "line.hpp"
 #include "motor.hpp"
@@ -16,14 +17,18 @@ int DoneLineSensor[48];
 float Vector[24];
 int Weight[24];
 int VectorNumber;
-float DefenceAngle = 0;
-float DefenceBallTime = 0;
+float DefenceAngle = 0.0; //時計回り0～360°
+float preDefenceAngle = 0.0;
+float DefenceBallTime = 0.0;
+float VectorAbsoluteValue;
 
 void Defence(){
   UseAllSensor();
-  DefenceAngle = GetCircleLineVector();
 
-  if(BallAngle == 999){
+  DefenceAngle = GetCircleLineVector();
+  if(DefenceAngle != 999.9) preDefenceAngle = DefenceAngle;
+
+  if(BallAngle == 999.0){
       if(time_us_32() / 1000000.0 - DefenceBallTime > 1){
         while(time_us_32() / 1000000.0 - DefenceBallTime < 2 && (mode == 3 || mode == 4)){
           UseGyroSensor();
@@ -39,9 +44,82 @@ void Defence(){
         }
         DefenceBallTime = time_us_32() / 1000000.0;
       }
+  }else{
+    DefenceBallTime = time_us_32() / 1000000.0;
+    if(BallAngle == -999.0){
+      //中央に移動
     }else{
-      DefenceBallTime = time_us_32() / 1000000.0;
+      if(DefenceAngle == 999.9){
+        //ラインの真ん中にいるとき
+        DefenceAngle = preDefenceAngle;
+      }
+      if(DefenceAngle == -999.9 || AllLineSensor <= ErorrLineSensor){
+        //ラインの上にいないとき
+        if(MyGoal.distance < GoalDistance){
+          //ゴールの中にいる
+          TargetFrequency[0] = DefaultFrequency * -cos(radian45(MyGoal.angle));
+          TargetFrequency[1] = DefaultFrequency * -sin(radian45(MyGoal.angle));
+          TargetFrequency[2] = DefaultFrequency * -cos(radian45(MyGoal.angle));
+          TargetFrequency[3] = DefaultFrequency * -sin(radian45(MyGoal.angle));
+          Turn();
+          EncoderAllMainMotorState(TargetFrequency);
+        }else{
+          //ゴールの外にいる
+          if(MyGoal.distance == 999.0){
+            //自ゴールが見えない→ディフェンス復帰
+            DefenceStart();
+          }else{
+            TargetFrequency[0] = DefaultFrequency * cos(radian45(MyGoal.angle));
+            TargetFrequency[1] = DefaultFrequency * sin(radian45(MyGoal.angle));
+            TargetFrequency[2] = DefaultFrequency * cos(radian45(MyGoal.angle));
+            TargetFrequency[3] = DefaultFrequency * sin(radian45(MyGoal.angle));
+            Turn();
+            EncoderAllMainMotorState(TargetFrequency);
+          }
+        }
+      }else{
+        //ラインの上にいるとき
+        
+        if(15 < AngleX  && AngleX < 345){
+          //回転を優先
+          TurnToTargetAngle(0.0,false);
+        }else if(MyGoal.angle < 90 || 270 < MyGoal.angle){
+          //???????????????????????
+        }else{
+          //ラインに対して平行成分と垂直成分を足し算する
+          //基本的にボールとゴールの直線上に機体がいることを目指す
+          
+          //平行成分
+          if(BallAngle <= 180){
+            BallAngle += 180;
+          }else{
+            BallAngle -= 180;
+          }
+
+          if(MyGoal.angle <= BallAngle){
+            //直線より左側にいる
+            TargetFrequency[0] += DefaultFrequency * (0.2 + (BallAngle - MyGoal.angle) / 120.0) * fabs(cos(radian45(DefenceAngle)));
+            TargetFrequency[1] -= DefaultFrequency * (0.2 + (BallAngle - MyGoal.angle) / 120.0) * fabs(sin(radian45(DefenceAngle)));
+            TargetFrequency[2] += DefaultFrequency * (0.2 + (BallAngle - MyGoal.angle) / 120.0) * fabs(cos(radian45(DefenceAngle)));
+            TargetFrequency[3] -= DefaultFrequency * (0.2 + (BallAngle - MyGoal.angle) / 120.0) * fabs(sin(radian45(DefenceAngle)));
+          }else{
+            //直線より右側にいる
+            TargetFrequency[0] -= DefaultFrequency * (0.2 + (MyGoal.angle - BallAngle) / 120.0) * fabs(cos(radian45(DefenceAngle)));
+            TargetFrequency[1] += DefaultFrequency * (0.2 + (MyGoal.angle - BallAngle) / 120.0) * fabs(sin(radian45(DefenceAngle)));
+            TargetFrequency[2] -= DefaultFrequency * (0.2 + (MyGoal.angle - BallAngle) / 120.0) * fabs(cos(radian45(DefenceAngle)));
+            TargetFrequency[3] += DefaultFrequency * (0.2 + (MyGoal.angle - BallAngle) / 120.0) * fabs(sin(radian45(DefenceAngle)));
+          }
+
+          //垂直成分
+          TargetFrequency[0] += DefaultFrequency * 0.3 * VectorAbsoluteValue * cos(radian45(DefenceAngle));
+          TargetFrequency[1] += DefaultFrequency * 0.3 * VectorAbsoluteValue * sin(radian45(DefenceAngle));
+          TargetFrequency[2] += DefaultFrequency * 0.3 * VectorAbsoluteValue * cos(radian45(DefenceAngle));
+          TargetFrequency[3] += DefaultFrequency * 0.3 * VectorAbsoluteValue * sin(radian45(DefenceAngle));
+        }
+        MyGoal.angle == BallAngle + 180;
+      }
     }
+  }
 }
 
 //ディフェンスの初期移動に戻る
@@ -112,7 +190,7 @@ float GetCircleLineVector(){
   result = atan2(VectorY,VectorX) / 3.1415 * -180 + 90 - 3.75;
   while(result < 0) result += 360.0;
   while(result >= 360) result -= 360.0;
-  float VectorAbsoluteValue = sqrt(VectorX * VectorX + VectorY * VectorY);
+  VectorAbsoluteValue = sqrt(VectorX * VectorX + VectorY * VectorY);
 
   if(SerialWatch == "vec"){
     printf(" 向き(真右が0度) : ");

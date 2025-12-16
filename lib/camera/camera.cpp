@@ -1,4 +1,5 @@
 #include "camera.hpp"
+#include "display.hpp"
 #include "../config.hpp"
 #include "hardware/uart.h"
 #include "pico/stdlib.h"

@@ -1,3 +1,4 @@
+#include "display.hpp"
 #include "gyro.hpp"
 #include "../config.hpp"
 #include "hardware/gpio.h"

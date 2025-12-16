@@ -1,3 +1,4 @@
+#include "display.hpp"
 #include "motor.hpp"
 #include "rp2040.hpp"
 #include "../config.hpp"
@@ -106,7 +107,6 @@ void analogWrite(int gpio,int duty){
 #define Kp 9.0
 #define Ki 3.0
 #define Kd 5.0
-#define alpha 0.01 //学習率
 
 float I[4] = {0,0,0,0};
 float preP[4] = {0,0,0,0};

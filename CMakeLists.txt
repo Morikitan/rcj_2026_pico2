@@ -30,6 +30,7 @@ include(pico_sdk_import.cmake)
 
 project(rcj_2026_main_rp2350 C CXX ASM)
 
+set(PICO_FLASH_SIZE_BYTES 8388608) #フラッシュメモリを8MBに設定
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 

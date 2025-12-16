@@ -1,4 +1,5 @@
 #include "ball.hpp"
+#include "display.hpp"
 #include "rp2040.hpp"
 #include "../config.hpp"
 #include "hardware/gpio.h"
@@ -87,13 +88,13 @@ void UseBallSensor(){
       }
     }
     //ベクトルの合成をする
-    if(SerialWatch == "bal")printf(" ベク ");
+    if(SerialWatch == "bav")printf(" ベク ");
     VectorX = 0;VectorY = 0;BallTotalWeight = 0;
     for(int i = 0;i < BallVectorNumber;i++){
       VectorX -= sin(BallVector[i] / 180.0 * 3.1415) * BallWeight[i];
       VectorY += cos(BallVector[i] / 180.0 * 3.1415) * BallWeight[i];
       BallTotalWeight += BallWeight[i];
-      if(SerialWatch == "bal"){
+      if(SerialWatch == "bav"){
         printf("%d : %f\n",BallWeight[i],BallVector[i]);
       }
     }

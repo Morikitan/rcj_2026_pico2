@@ -3,6 +3,7 @@
 #include "ball.hpp"
 #include "camera.hpp"
 #include "defence.hpp"
+#include "display.hpp"
 #include "gyro.hpp"
 #include "line.hpp"
 #include "motor.hpp"
@@ -137,8 +138,8 @@ void NewLineMove(){
       }
       LineDuty[0] = LineFrequency * (-sin((FirstAngle - 90.0) / 180.0 * -3.1415) - cos((FirstAngle - 90.0) / 180.0 * -3.1415)) / 1.4142;
       LineDuty[1] = LineFrequency * (-sin((FirstAngle - 90.0) / 180.0 * -3.1415) + cos((FirstAngle - 90.0) / 180.0 * -3.1415)) / 1.4142;
-      LineDuty[2] = LineFrequency * (sin((FirstAngle - 90.0) / 180.0 * -3.1415) - cos((FirstAngle - 90.0) / 180.0 * -3.1415)) / 1.4142;
-      LineDuty[3] = LineFrequency * (sin((FirstAngle - 90.0) / 180.0 * -3.1415) + cos((FirstAngle - 90.0) / 180.0 * -3.1415)) / 1.4142;
+      LineDuty[2] = LineFrequency * (-sin((FirstAngle - 90.0) / 180.0 * -3.1415) - cos((FirstAngle - 90.0) / 180.0 * -3.1415)) / 1.4142;
+      LineDuty[3] = LineFrequency * (-sin((FirstAngle - 90.0) / 180.0 * -3.1415) + cos((FirstAngle - 90.0) / 180.0 * -3.1415)) / 1.4142;
       MainPreTime = time_us_32() / 1000000.0;
       while (LineDeltaTime < 0.03) {
         UseLineSensor();
@@ -161,8 +162,8 @@ void NewLineMove(){
         }else if(LineAngle != -999.9){
           TargetFrequency[0] = LineFrequency * (-sin((LineAngle - 90.0) / 180.0 * -3.1415) - cos((FirstAngle - 90.0) / 180.0 * -3.1415)) / 1.4142;
           TargetFrequency[1] = LineFrequency * (-sin((LineAngle - 90.0) / 180.0 * -3.1415) + cos((FirstAngle - 90.0) / 180.0 * -3.1415)) / 1.4142;
-          TargetFrequency[2] = LineFrequency * (sin((LineAngle - 90.0) / 180.0 * -3.1415) - cos((LineAngle - 90.0) / 180.0 * -3.1415)) / 1.4142;
-          TargetFrequency[3] = LineFrequency * (sin((LineAngle - 90.0) / 180.0 * -3.1415) + cos((LineAngle - 90.0) / 180.0 * -3.1415)) / 1.4142;
+          TargetFrequency[2] = LineFrequency * (-sin((LineAngle - 90.0) / 180.0 * -3.1415) - cos((LineAngle - 90.0) / 180.0 * -3.1415)) / 1.4142;
+          TargetFrequency[3] = LineFrequency * (-sin((LineAngle - 90.0) / 180.0 * -3.1415) + cos((LineAngle - 90.0) / 180.0 * -3.1415)) / 1.4142;
         }
         Turn();
         EncoderAllMainMotorState(TargetFrequency);
@@ -352,11 +353,18 @@ void ChaseBall(float angle,bool isMakao){
   EncoderAllMainMotorState(TargetFrequency);
 
   if (SerialWatch == "mot") {
-    if(isUseDisplay == true){
-      
+    if(isUseDisplay){
+      snprintf(DisplayBuffer,DisplayBufferSize,"BallAngle : %.1f AngleX : %.1f",BallAngle,AngleX);
+      WriteTextOnDisplay(5,5,DisplayBuffer,8,true,false);
+      snprintf(DisplayBuffer,DisplayBufferSize,"AngleFrequency : %.1f motor1 : %.1f",AngleFrequency,TargetFrequency[0]);
+      WriteTextOnDisplay(5,15,DisplayBuffer,8,false,false);
+      snprintf(DisplayBuffer,DisplayBufferSize,"m2 : %.1f m3 : %.1f m4 : %.1f",TargetFrequency[1],TargetFrequency[2],TargetFrequency[3]);
+      WriteTextOnDisplay(5,25,DisplayBuffer,8,false,false);
+      snprintf(DisplayBuffer,DisplayBufferSize,"回転 : %.1f 縦 : %.1f 横 : %.1f",TargetFrequency[0] + TargetFrequency[1] - TargetFrequency[2] - TargetFrequency[3],TargetFrequency[0] + TargetFrequency[1] + TargetFrequency[2] + TargetFrequency[3],TargetFrequency[0] - TargetFrequency[1] + TargetFrequency[2] - TargetFrequency[3]);
+      WriteTextOnDisplay(5,35,DisplayBuffer,8,false,true);
     }else{
       printf("BallAngle : %f AngleX : %f AngleFrequency : %f",BallAngle,AngleX,AngleFrequency);
-      printf(" motor1 : %d m2 : %d m3 : %d m4 : %d",TargetFrequency[0],TargetFrequency[1],TargetFrequency[2],TargetFrequency[3]);
+      printf(" motor1 : %f m2 : %f m3 : %f m4 : %f",TargetFrequency[0],TargetFrequency[1],TargetFrequency[2],TargetFrequency[3]);
       printf(" 回転 : %d 縦 : %d 横 : %d\n",TargetFrequency[0] + TargetFrequency[1] - TargetFrequency[2] - TargetFrequency[3],TargetFrequency[0] + TargetFrequency[1] + TargetFrequency[2] + TargetFrequency[3],TargetFrequency[0] - TargetFrequency[1] + TargetFrequency[2] - TargetFrequency[3]);  //反時計が正
     }
   }
@@ -400,9 +408,20 @@ void NonDribbler(float angle,bool isClockWise){
   EncoderAllMainMotorState(TargetFrequency);
 
   if (SerialWatch == "mot") {
-    printf("BallAngle : %f AngleX : %f AngleFrequency : %f",BallAngle,AngleX,AngleFrequency);
-    printf(" motor1 : %d m2 : %d m3 : %d m4 : %d",TargetFrequency[0],TargetFrequency[1],TargetFrequency[2],TargetFrequency[3]);
-    printf(" 回転 : %d 縦 : %d 横 : %d\n",TargetFrequency[0] + TargetFrequency[1] - TargetFrequency[2] - TargetFrequency[3],TargetFrequency[0] + TargetFrequency[1] + TargetFrequency[2] + TargetFrequency[3],TargetFrequency[0] - TargetFrequency[1] + TargetFrequency[2] - TargetFrequency[3]);  //反時計が正
+    if(isUseDisplay){
+      snprintf(DisplayBuffer,DisplayBufferSize,"BallAngle : %.1f AngleX : %.1f",BallAngle,AngleX);
+      WriteTextOnDisplay(5,5,DisplayBuffer,8,true,false);
+      snprintf(DisplayBuffer,DisplayBufferSize,"AngleFrequency : %.1f motor1 : %.1f",AngleFrequency,TargetFrequency[0]);
+      WriteTextOnDisplay(5,15,DisplayBuffer,8,false,false);
+      snprintf(DisplayBuffer,DisplayBufferSize,"m2 : %.1f m3 : %.1f m4 : %.1f",TargetFrequency[1],TargetFrequency[2],TargetFrequency[3]);
+      WriteTextOnDisplay(5,25,DisplayBuffer,8,false,false);
+      snprintf(DisplayBuffer,DisplayBufferSize,"回転 : %.1f 縦 : %.1f 横 : %.1f",TargetFrequency[0] + TargetFrequency[1] - TargetFrequency[2] - TargetFrequency[3],TargetFrequency[0] + TargetFrequency[1] + TargetFrequency[2] + TargetFrequency[3],TargetFrequency[0] - TargetFrequency[1] + TargetFrequency[2] - TargetFrequency[3]);
+      WriteTextOnDisplay(5,35,DisplayBuffer,8,false,true);
+    }else{
+      printf("BallAngle : %f AngleX : %f AngleFrequency : %f",BallAngle,AngleX,AngleFrequency);
+      printf(" motor1 : %f m2 : %f m3 : %f m4 : %f",TargetFrequency[0],TargetFrequency[1],TargetFrequency[2],TargetFrequency[3]);
+      printf(" 回転 : %d 縦 : %d 横 : %d\n",TargetFrequency[0] + TargetFrequency[1] - TargetFrequency[2] - TargetFrequency[3],TargetFrequency[0] + TargetFrequency[1] + TargetFrequency[2] + TargetFrequency[3],TargetFrequency[0] - TargetFrequency[1] + TargetFrequency[2] - TargetFrequency[3]);  //反時計が正
+    }
   }
   BallPreTime = time_us_32();
 }
