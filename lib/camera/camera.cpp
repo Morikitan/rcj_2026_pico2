@@ -23,7 +23,7 @@ void UseCamera(){
     //HowManyData = 0;
     while(uart_is_readable(CameraUART)){
         uart_read_blocking(CameraUART,CameraData1,7);
-        //if(SerialWatch == 'c')printf("%u %u %u %u %u %u %u",CameraData1[0],CameraData1[1],CameraData1[2],CameraData1[3],CameraData1[4],CameraData1[5],CameraData1[6]);
+        //if(SerialWatch == "cam")printf("%u %u %u %u %u %u %u",CameraData1[0],CameraData1[1],CameraData1[2],CameraData1[3],CameraData1[4],CameraData1[5],CameraData1[6]);
     }
 
     //0x02が先頭識別バイト以外でこないことを想定した仕様
@@ -38,7 +38,7 @@ void UseCamera(){
             }
         }
     }
-    //if(SerialWatch == 'c')printf("%u %u %u %u %u %u %u\n",CameraData[0],CameraData[1],CameraData[2],CameraData[3],CameraData[4],CameraData[5],CameraData[6]);
+    //if(SerialWatch == "cam")printf("%u %u %u %u %u %u %u\n",CameraData[0],CameraData[1],CameraData[2],CameraData[3],CameraData[4],CameraData[5],CameraData[6]);
     if(isYellowMyGoal == 1){
         if(CameraData[1] == 255)MyGoal.X = 999;
         else MyGoal.X = 255 - (int)CameraData[1];
@@ -87,7 +87,17 @@ void UseCamera(){
     }
     
     if(SerialWatch == "cam"){
-        printf("MyGoalDis : %f Angle : %f OppGoalDis : %f Angle : %f LWall : %d RWall : %d\n"
-        ,MyGoal.distance,MyGoal.angle,OpponentGoal.distance,OpponentGoal.angle,LeftWall,RightWall);
+        if(isUseDisplay){
+            WriteTextOnDisplay(5,20,"          MyGoal           OppGoal",8,false,false);
+            snprintf(DisplayBuffer,DisplayBufferSize,"Distance : %.1f   %.1f",MyGoal.distance,OpponentGoal.distance);
+            WriteTextOnDisplay(5,30,DisplayBuffer,8,false,false);
+            snprintf(DisplayBuffer,DisplayBufferSize,"Angle    : %.1f   %.1f",MyGoal.angle,OpponentGoal.angle);
+            WriteTextOnDisplay(5,40,DisplayBuffer,8,false,false);
+            snprintf(DisplayBuffer,DisplayBufferSize,"LWall : %.1f RWall : %.1f",LeftWall,RightWall);
+            WriteTextOnDisplay(5,52,DisplayBuffer,8,false,true);
+        }else{
+            printf("MyGoalDis : %f Angle : %f OppGoalDis : %f Angle : %f LWall : %d RWall : %d\n"
+            ,MyGoal.distance,MyGoal.angle,OpponentGoal.distance,OpponentGoal.angle,LeftWall,RightWall);
+        }
     }
 }

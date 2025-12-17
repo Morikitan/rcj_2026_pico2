@@ -4,8 +4,8 @@
 #include "hardware/i2c.h"
 #include "pico/stdlib.h"
 #include "u8g2.h"
+#include <math.h>
 #include <string>
-
 
 u8g2_t u8g2;
 
@@ -52,6 +52,72 @@ void WriteTextOnDisplay(char x,char y,const char* text,char size,bool isFirstLin
     u8g2_DrawStr(&u8g2, x, y, text); 
     // 表示に反映
     if(isLastLine == true)u8g2_SendBuffer(&u8g2);                   
+}
+
+//円を描く関数
+// x : 円の左端のx座標
+// y : 円の上端のy座標
+// r : 円の半径
+void DrawCircleOnDisplay(int x,int y,int r){
+    u8g2_DrawCircle(&u8g2,x+r,y+r,r,U8G2_DRAW_ALL);
+}
+
+//直線を描く関数
+// x0 : 直線の開始点のx座標
+// y0 : 直線の開始点のy座標
+// length : 直線の長さ
+// angle : 直線の開始点からの角度(座標平面での弧度法)
+void DrawLineOnDisplay(int x0,int y0,int length,float angle){
+    u8g2_DrawLine(&u8g2,x0,y0,x0 + int(length * cos(angle)),y0 + int(length * sin(angle)));
+}
+
+//点を打つ変数
+// x : 点のx座標
+// y : 点のy座標
+void DrawPixelOnDisplay(int x,int y){
+    u8g2_DrawPixel(&u8g2,x,y);
+}
+
+//ディスプレイ上の説明欄(一番上の文字列)を生成する
+void PrintDisplayMode(){
+    if(DisplayMode == 1){
+        SerialWatch = "hom";
+        WriteTextOnDisplay(5,5,"<Home>",12,true,false);
+    }else if(DisplayMode == 2){
+        SerialWatch = "bal";
+        WriteTextOnDisplay(5,5,"<BallSensor>",12,true,false);
+    }else if(DisplayMode == 3){
+        SerialWatch = "bav";
+        WriteTextOnDisplay(5,5,"<BallVector>",12,true,false);
+    }else if(DisplayMode == 4){
+        SerialWatch = "cam";
+        WriteTextOnDisplay(5,5,"<Camera>",12,true,false);
+    }else if(DisplayMode == 5){
+        SerialWatch = "enc";
+        WriteTextOnDisplay(5,5,"<Encorder>",12,true,false);
+    }else if(DisplayMode == 6){
+        SerialWatch = "gyr";
+        WriteTextOnDisplay(5,5,"<GyroSensor>",12,true,false);
+    }else if(DisplayMode == 7){
+        SerialWatch = "lin";
+        WriteTextOnDisplay(5,5,"<Line>",12,true,false);
+        DrawCircleOnDisplay(64,0,32);
+    }else if(DisplayMode == 8){
+        SerialWatch = "mot";
+        WriteTextOnDisplay(5,5,"<MotorFrequency>",12,true,false);
+    }else if(DisplayMode == 9){
+        SerialWatch = "tim";
+        WriteTextOnDisplay(5,5,"<DeltaTime>",12,true,false);
+    }else if(DisplayMode == 10){
+        SerialWatch = "vec";
+        WriteTextOnDisplay(5,5,"<LineVector>",12,true,false);
+    }else if(DisplayMode == 11){
+        SerialWatch = "oth";
+        WriteTextOnDisplay(5,5,"<Others>",12,true,false);
+    }else{
+        SerialWatch = "???";
+        WriteTextOnDisplay(5,5,"<エラー>",12,true,false);
+    }
 }
 
 // I2C: GP4 = SDA, GP5 = SCL, I2C0使用

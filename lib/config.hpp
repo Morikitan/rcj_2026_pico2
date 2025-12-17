@@ -1,14 +1,18 @@
 #pragma once
 
 #include <string>
-/*******************
-ang 機体の角度(AngleX)
-bal ボールセンサーの値(BallDistance,BallAngle)
-cam カメラの値(自分と敵のゴールの距離と向き、壁との距離)
-lin ラインセンサーの値(0か1で受け取る)
-mot モーターに加わる電圧(AngleXもセットで)
-tim 1回の経過時間(ミリ秒)
-*******************/
+/******************************************************
+1 : hom 通常モード(modeを表示)
+2 : bal ボールセンサーの値(BallDistance,BallAngle)
+3 : bav ボールセンサのベクトルの値(消すかも)
+4 : cam カメラの値(自分と敵のゴールの距離と向き、壁との距離)
+5 : enc エンコーダーの値
+6 : gyr 機体の角度(AngleX)
+7 : lin ラインセンサーの値(0か1で受け取る)
+8 : mot モーターに加わる電圧(AngleXもセットで)
+9 : tim 1回の経過時間(ミリ秒)
+10: oth その他(時によって変わる)
+******************************************************/
 extern std::string SerialWatch;
 
 //mode
@@ -79,6 +83,7 @@ extern int LeftWall, RightWall;
 #define isUseDisplay true
 #define DisplayBufferSize 200
 extern char DisplayBuffer[DisplayBufferSize];
+extern int DisplayMode;
 
 //gyro sensor
 #define GyroI2C i2c1

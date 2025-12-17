@@ -1,3 +1,4 @@
+#include "action.hpp"
 #include "display.hpp"
 #include "gyro.hpp"
 #include "../config.hpp"
@@ -62,12 +63,24 @@ void UseGyroSensor(){
             }
         }*/
         if(isBreak == true){
-            printf("ジャイロ死亡\n");
+            if(isUseDisplay){
+                WriteTextOnDisplay(5,5,"ジャイロ死亡",24,true,true);
+            }else{
+                printf("ジャイロ死亡\n");
+            }
         }else{
             i2c_read_blocking(GyroI2C, BNO_ADDRESS, buffer, 2, false); 
             AngleX = ((buffer[1] << 8) | buffer[0]) / 16.0;
-            if(SerialWatch == "ang"){
-                printf("AngleX : %f\n",AngleX);
+            if(SerialWatch == "gyr"){
+                if(isUseDisplay){
+                    DrawCircleOnDisplay(5,20,20);
+                    DrawLineOnDisplay(25,40,20,-radian(AngleX));
+                    WriteTextOnDisplay(60,20,"AngleX",8,false,false);
+                    snprintf(DisplayBuffer,DisplayBufferSize,"%f",AngleX);
+                    WriteTextOnDisplay(60,30,DisplayBuffer,8,false,true);
+                }else{
+                    printf("AngleX : %f\n",AngleX);
+                }
             }
             if(mode == 2 || mode == 4 || mode == 8 || mode == 10){
                 if (AngleX > 180){

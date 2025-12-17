@@ -38,9 +38,6 @@ void Defence(){
           TargetFrequency[3] = DefaultFrequency;
           Turn();
           EncoderAllMainMotorState(TargetFrequency);
-          if (SerialWatch == "def") {
-            printf("ボールを持っています\n");
-          }
         }
         DefenceBallTime = time_us_32() / 1000000.0;
       }
@@ -193,7 +190,7 @@ float GetCircleLineVector(){
   VectorAbsoluteValue = sqrt(VectorX * VectorX + VectorY * VectorY);
 
   if(SerialWatch == "vec"){
-    printf(" 向き(真右が0度) : ");
+    printf(" 向き : ");
     if(VectorX == 999 && VectorY == 999){
       printf("ラインの上にいない!!\n");
     }else if(VectorX == 0 && VectorY == 0){

@@ -26,9 +26,19 @@ void UseLineSensor(){
     //データを変数に格納する
     AllLineSensorA = 0;AllLineSensorB = 0;AllLineSensorC = 0;AllLineSensorD = 0;AllLineSensorE = 0;
 
+    if(SerialWatch == "lin" && !isUseDisplay) printf("A:");
     for(int i = 0;i < 5;i++){
         LineSensorA[i] = (char)((LineRawData[0] >> (7 - i)) & (0x01));
         AllLineSensorA += LineSensorA[i];
+        if(SerialWatch == "lin"){
+            if(isUseDisplay){
+                if(LineSensorA[i] == 1){
+
+                }
+            }else{
+                printf("%d",LineSensorA[i]);
+            }
+        }
     }
 
     for(int i = 0;i < 8;i++){
@@ -52,8 +62,19 @@ void UseLineSensor(){
     LineSensorD[8] = LineRawData[4] >> 7;
     AllLineSensorD += LineSensorD[8];
 
+    if(SerialWatch == "lin" && !isUseDisplay) printf("E:");
     for(int i = 0;i < 48;i++){
         LineSensorE[i] = (char)((LineRawData[5 + i / 8] >> (7 - (i%8)) & (0x01)));
         AllLineSensorE += LineSensorE[i];
+        if(SerialWatch == "lin"){
+            if(isUseDisplay){
+                if(LineSensorE[i] == 1){
+                    DrawPixelOnDisplay(64+20*cos(),);
+                }
+            }else{
+                printf("%d",LineSensorE[i]);
+            }
+        }
     }
+    if(SerialWatch == "lin" && !isUseDisplay)printf("\n");
 }

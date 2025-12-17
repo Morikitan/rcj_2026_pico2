@@ -30,12 +30,15 @@ int main()
         // UseDisplay(&u8g2);
         //UseEncoder();
         // picoPioUartRx_program_putc(0x65,true);
-        picoPioUartTx_program_putc(0x68,true);
-        printf("送信いたしました");
-        sleep_ms(1000);
-        
+        //picoPioUartTx_program_putc(0x68,true);
+        //printf("送信いたしました");
+        //sleep_ms(1000);
+        if(isUseDisplay) PrintDisplayMode();
+
         if(mode == 1 || mode == 2){
             Attack();
+        }else if(mode == 3 || mode == 4){
+            Defence();
         }
     }
 }

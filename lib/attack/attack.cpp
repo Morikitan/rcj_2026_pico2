@@ -410,13 +410,13 @@ void NonDribbler(float angle,bool isClockWise){
   if (SerialWatch == "mot") {
     if(isUseDisplay){
       snprintf(DisplayBuffer,DisplayBufferSize,"BallAngle : %.1f AngleX : %.1f",BallAngle,AngleX);
-      WriteTextOnDisplay(5,5,DisplayBuffer,8,true,false);
+      WriteTextOnDisplay(5,20,DisplayBuffer,8,false,false);
       snprintf(DisplayBuffer,DisplayBufferSize,"AngleFrequency : %.1f motor1 : %.1f",AngleFrequency,TargetFrequency[0]);
-      WriteTextOnDisplay(5,15,DisplayBuffer,8,false,false);
+      WriteTextOnDisplay(5,30,DisplayBuffer,8,false,false);
       snprintf(DisplayBuffer,DisplayBufferSize,"m2 : %.1f m3 : %.1f m4 : %.1f",TargetFrequency[1],TargetFrequency[2],TargetFrequency[3]);
-      WriteTextOnDisplay(5,25,DisplayBuffer,8,false,false);
-      snprintf(DisplayBuffer,DisplayBufferSize,"回転 : %.1f 縦 : %.1f 横 : %.1f",TargetFrequency[0] + TargetFrequency[1] - TargetFrequency[2] - TargetFrequency[3],TargetFrequency[0] + TargetFrequency[1] + TargetFrequency[2] + TargetFrequency[3],TargetFrequency[0] - TargetFrequency[1] + TargetFrequency[2] - TargetFrequency[3]);
-      WriteTextOnDisplay(5,35,DisplayBuffer,8,false,true);
+      WriteTextOnDisplay(5,40,DisplayBuffer,8,false,false);
+      snprintf(DisplayBuffer,DisplayBufferSize,"rot : %.1f ver : %.1f hor : %.1f",TargetFrequency[0] + TargetFrequency[1] - TargetFrequency[2] - TargetFrequency[3],TargetFrequency[0] + TargetFrequency[1] + TargetFrequency[2] + TargetFrequency[3],TargetFrequency[0] - TargetFrequency[1] + TargetFrequency[2] - TargetFrequency[3]);
+      WriteTextOnDisplay(5,50,DisplayBuffer,8,false,true);
     }else{
       printf("BallAngle : %f AngleX : %f AngleFrequency : %f",BallAngle,AngleX,AngleFrequency);
       printf(" motor1 : %f m2 : %f m3 : %f m4 : %f",TargetFrequency[0],TargetFrequency[1],TargetFrequency[2],TargetFrequency[3]);

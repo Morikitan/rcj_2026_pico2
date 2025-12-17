@@ -30,19 +30,25 @@ int ErorrLineSensor;
 bool isMotorClockWise[4];
 float motorFrequency[4];
 char DisplayBuffer[DisplayBufferSize];
+int DisplayMode;
 
 //変数の初期化
 void VariableSetup(){
     /******************
-    ang 機体の角度(AngleX)
-    bal ボールセンサーの値(BallDistance,BallAngle)
-    bav ボールセンサのベクトルの値(消すかも)
-    cam カメラの値(自分と敵のゴールの距離と向き、壁との距離)
-    lin ラインセンサーの値(0か1で受け取る)
-    mot モーターに加わる電圧(AngleXもセットで)
-    tim 1回の経過時間(ミリ秒)
+    1 : hom 通常モード(modeを表示)
+    2 : bal ボールセンサーの値(BallDistance,BallAngle)
+    3 : bav ボールセンサのベクトルの値(消すかも)
+    4 : cam カメラの値(自分と敵のゴールの距離と向き、壁との距離)
+    5 : enc エンコーダーの値
+    6 : gyr 機体の角度(AngleX)
+    7 : lin ラインセンサーの値(0か1で受け取る)
+    8 : mot モーターに加わる電圧(AngleXもセットで)
+    9 : tim 1回の経過時間(ミリ秒)
+   10 : vec ラインのベクトルを取得
+   11 : oth その他(時によって変わる)
     *******************/
-    SerialWatch = "ang";
+    SerialWatch = "hom";
+    DisplayMode = 1;//上のコメントでの一番左側の数字
 
     //必ず変更しましょう。1で黄色ゴールが自分側(相手にシュートされる側)。0で逆
     isYellowMyGoal = 1;
@@ -162,3 +168,4 @@ float radian45(float angle){
 void MeasureMaxSpeed(){
 
 }
+

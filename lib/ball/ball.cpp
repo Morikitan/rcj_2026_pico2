@@ -88,16 +88,20 @@ void UseBallSensor(){
       }
     }
     //ベクトルの合成をする
-    if(SerialWatch == "bav")printf(" ベク ");
     VectorX = 0;VectorY = 0;BallTotalWeight = 0;
     for(int i = 0;i < BallVectorNumber;i++){
       VectorX -= sin(BallVector[i] / 180.0 * 3.1415) * BallWeight[i];
       VectorY += cos(BallVector[i] / 180.0 * 3.1415) * BallWeight[i];
       BallTotalWeight += BallWeight[i];
       if(SerialWatch == "bav"){
-        printf("%d : %f\n",BallWeight[i],BallVector[i]);
+        if(isUseDisplay){
+          
+        }else{
+          printf("%d : %f\n",BallWeight[i],BallVector[i]);
+        }
       }
     }
+    if(SerialWatch == "bav" && isUseDisplay)WriteTextOnDisplay(5,20,"Not Found",8,false,true);
     if(BallVectorNumber == 0){
       VectorX = 999;
       VectorY = 999;
