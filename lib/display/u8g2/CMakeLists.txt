@@ -13,6 +13,7 @@ set(U8G2_SOURCES
     csrc/u8g2_ll_hvline.c
     csrc/u8g2_font.c
     csrc/u8g2_fonts.c
+    csrc/u8g2_line.c
     csrc/u8g2_d_memory.c
     csrc/u8g2_hvline.c
     csrc/u8g2_bitmap.c

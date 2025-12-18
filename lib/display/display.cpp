@@ -8,6 +8,7 @@
 #include <string>
 
 u8g2_t u8g2;
+float DisplayPreTime = 0;
 
 void DisplaySetup(){
     // ディスプレイ初期化（I2C + ノーブランドSSD1309用）
@@ -108,6 +109,9 @@ void PrintDisplayMode(){
     }else if(DisplayMode == 9){
         SerialWatch = "tim";
         WriteTextOnDisplay(5,5,"<DeltaTime>",12,true,false);
+        snprintf(DisplayBuffer,DisplayBufferSize,"%fミリ秒",timer_hw->timerawl / 1000.0-DisplayPreTime);
+        WriteTextOnDisplay(5,20,DisplayBuffer,12,false,true);
+        DisplayPreTime = timer_hw->timerawl / 1000.0;
     }else if(DisplayMode == 10){
         SerialWatch = "vec";
         WriteTextOnDisplay(5,5,"<LineVector>",12,true,false);
