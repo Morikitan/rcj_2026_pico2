@@ -28,6 +28,7 @@ set(U8G2_SOURCES
     csrc/u8x8_cad.c
     csrc/u8x8_capture.c
     csrc/u8x8_d_ssd1306_128x64_noname.c
+    csrc/u8x8_d_ssd1309.c
     csrc/u8x8_debounce.c
     csrc/u8x8_display.c
     csrc/u8x8_fonts.c

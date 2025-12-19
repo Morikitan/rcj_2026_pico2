@@ -78,9 +78,9 @@ extern struct GoalInformation OpponentGoal;
 extern int LeftWall, RightWall;
 
 //display
-#define DisplayI2C i2c1
-#define DisplaySDApin 2
-#define DisplaySCLpin 3
+#define DisplayI2C i2c1  //i2c0
+#define DisplaySDApin 14 //16
+#define DisplaySCLpin 15 //17
 #define isUseDisplay true
 #define DisplayBufferSize 200
 extern char DisplayBuffer[DisplayBufferSize];

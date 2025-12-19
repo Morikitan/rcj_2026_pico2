@@ -12,6 +12,7 @@ bool TurnToTargetAngle(float angle, bool isUseIsBreak);
 float radian(float angle);
 float radian45(float angle);
 void MeasureMaxSpeed();
+void ResetTargetFrequency();
 
 #ifdef __cplusplus
 }

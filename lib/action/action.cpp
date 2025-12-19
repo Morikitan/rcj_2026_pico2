@@ -169,3 +169,10 @@ void MeasureMaxSpeed(){
 
 }
 
+//TargetFrequencyの中身をすべて0.0にする
+void ResetTargetFrequency(){
+    TargetFrequency[0] = 0.0;
+    TargetFrequency[1] = 0.0;
+    TargetFrequency[2] = 0.0;
+    TargetFrequency[3] = 0.0;
+}

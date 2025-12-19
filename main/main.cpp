@@ -22,7 +22,7 @@ int main()
     printf("初期化開始\n");
     // PinSetup();
     // ディスプレイ初期化（I2C + ノーブランドSSD1306用）
-    //DisplaySetup(&u8g2);
+    DisplaySetup();
     RP2040Setup();
     printf("初期化終了\n");
     while (true) {
