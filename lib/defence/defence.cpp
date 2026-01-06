@@ -260,7 +260,7 @@ float GetCircleLineVector(){
     for(int i = 0;i < 48;i++){
       if(LineSensorE[i] > 0 && DoneLineSensor[i] == false){
         if(i == 0){
-          //LineSensor[0]だけ反時計回り側にあるセンサを考える
+          //LineSensor[0]だけ時計回り側にあるセンサを考える
           int k = 47;
           while(k >= 1 && LineSensorE[k] > 0){
             DoneLineSensor[k] = true;

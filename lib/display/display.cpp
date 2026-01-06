@@ -83,7 +83,7 @@ void DrawPixelOnDisplay(int x,int y){
 void PrintDisplayMode(){
     if(DisplayMode == 1){
         SerialWatch = "hom";
-        WriteTextOnDisplay(5,5,"<Home>",12,true,false);
+        WriteTextOnDisplay(5,15,"<Home>",12,true,true);
     }else if(DisplayMode == 2){
         SerialWatch = "bal";
         WriteTextOnDisplay(5,5,"<BallSensor>",12,true,false);
@@ -120,7 +120,7 @@ void PrintDisplayMode(){
         WriteTextOnDisplay(5,5,"<Others>",12,true,false);
     }else{
         SerialWatch = "???";
-        WriteTextOnDisplay(5,5,"<エラー>",12,true,false);
+        WriteTextOnDisplay(5,15,"<error>",12,true,true);
     }
 }
 
@@ -151,7 +151,7 @@ uint8_t u8x8_byte_pico_i2c(u8x8_t *u8x8, uint8_t msg,uint8_t arg_int, void *arg_
             buf_idx = 0;
             break;
         case U8X8_MSG_BYTE_END_TRANSFER:
-            i2c_write_blocking(i2c1,u8x8_GetI2CAddress(u8x8) >> 1,buffer,buf_idx,false);
+            i2c_write_blocking(DisplayI2C,u8x8_GetI2CAddress(u8x8) >> 1,buffer,buf_idx,false);
             break;
         default:
             return 0;

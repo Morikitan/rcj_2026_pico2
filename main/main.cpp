@@ -18,22 +18,22 @@ int main()
 {
     stdio_init_all();
 
-    sleep_ms(5000);
+    sleep_ms(1000);
     printf("初期化開始\n");
-    // PinSetup();
+    PinSetup();
     // ディスプレイ初期化（I2C + ノーブランドSSD1306用）
     DisplaySetup();
     RP2040Setup();
     printf("初期化終了\n");
     while (true) {
-        //UseDisplay(&u8g2);
-        // UseDisplay(&u8g2);
         //UseEncoder();
         // picoPioUartRx_program_putc(0x65,true);
         //picoPioUartTx_program_putc(0x68,true);
         //printf("送信いたしました");
         //sleep_ms(1000);
         if(isUseDisplay) PrintDisplayMode();
+        //WriteTextOnDisplay(5,15,"<Home>",12,true,true);
+        sleep_ms(1000);
 
         if(mode == 1 || mode == 2){
             Attack();
