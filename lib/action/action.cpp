@@ -47,8 +47,8 @@ void VariableSetup(){
    10 : vec ラインのベクトルを取得
    11 : oth その他(時によって変わる)
     *******************/
-    SerialWatch = "hom";
-    DisplayMode = 1;//上のコメントでの一番左側の数字
+    SerialWatch = "bal";
+    DisplayMode = 2;//上のコメントでの一番左側の数字
 
     //必ず変更しましょう。1で黄色ゴールが自分側(相手にシュートされる側)。0で逆
     isYellowMyGoal = 1;

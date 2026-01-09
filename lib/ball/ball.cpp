@@ -4,7 +4,9 @@
 #include "../config.hpp"
 #include "hardware/gpio.h"
 #include "hardware/i2c.h"
+#include "hardware/pio.h"
 #include "pico/stdlib.h"
+#include "picoPioUart.pio.h"
 #include <math.h>
 
 uint8_t buffer2[32];
@@ -17,20 +19,38 @@ int BallTotalWeight;
 float VectorX,VectorY;
 int BallVectorNumber;
 
+PIO pio_ball;
+uint sm_rx_ball;
+uint sm_tx_ball;
+uint offset_ball;
+uint offset2_ball;
+bool parity_check_ball;
+
 //ボールセンサーの初期化
 void BallSetup(){
-    gpio_init(BallSDApin);
-    gpio_init(BallSCLpin);
-    gpio_set_function(BallSDApin,GPIO_FUNC_I2C);
-    gpio_set_function(BallSCLpin,GPIO_FUNC_I2C);
-    i2c_init(BallI2C,115200);
+    pio_ball = pio0;
+
+    sm_rx_ball = 2;
+
+    //使うピン番号が32以上なので必要な処理群
+    // pio_set_gpio_base(pio_ball,16);
+
+    offset_ball = pio_add_program(pio_ball, &picoPioUartRx_program);
+    picoPioUartRx_program_init(pio_ball, sm_rx_ball, offset_ball, (uint)(BallSCLpin), SERIAL_BAUD);
+
+    // 使うSMを指定する(送信と受信では別のSMを使う)
+    sm_tx_ball = 3;
+    offset2_ball = pio_add_program(pio_ball, &picoPioUartTx_program);
+    picoPioUartTx_program_init(pio_ball, sm_tx_ball, offset2_ball, (uint)(BallSDApin), SERIAL_BAUD);
 }
 
 //ボールセンサー(赤外線センサー)を使う。
 void UseBallSensor(){
     //ボール検知センサを調べる
-    i2c_write_blocking(BallI2C,0x42,(uint8_t[]){0x01},1,false);
-    while(!i2c_get_read_available(BallI2C)){}
+    picoPioUartTx_program_putc(0x01,true);
+    for(int i = 0;i <= 31;i++){
+      buffer2[i] = picoPioUartRx_program_getc(true,&parity_check_ball);
+    }
     i2c_read_blocking(BallI2C,0x42,buffer2,32,false);
     //データを16bitのもとの形に直す
     for(int i = 0;i < 16;i++){
@@ -101,7 +121,7 @@ void UseBallSensor(){
         }
       }
     }
-    if(SerialWatch == "bav" && isUseDisplay)WriteTextOnDisplay(5,20,"Not Found",8,false,true);
+    if(SerialWatch == "bav" && isUseDisplay)WriteTextOnDisplay(5,30,"Not Found",8,false,true);
     if(BallVectorNumber == 0){
       VectorX = 999;
       VectorY = 999;
@@ -127,4 +147,72 @@ void UseBallSensor(){
     }else if(BallAngle != 999){
       BallAngle += 11.25;
     }
+    if(SerialWatch == "bal"){
+      if(isUseDisplay){
+        snprintf(DisplayBuffer,DisplayBufferSize,"%f",BallAngle);
+        WriteTextOnDisplay(5,40,DisplayBuffer,12,false,true);
+      }else{
+        printf("%f\n",BallAngle);
+      }
+    }
 }
+
+/*
+//UART(シリアル通信)で送信する関数
+//
+//data : 送るデータ(uint8_t型)
+//even_parity : 偶数か奇数のどちらになるようにパリティを付加するか。trueで偶数。falseで奇数。
+void picoPioUartTx_program_putc(unsigned char data, bool even_parity) {
+    uint32_t byte = (uint32_t)data;
+    uint8_t parity = 0;
+    for (int i = 0; i < 8; i++) {
+        parity ^= byte & 0x1;
+        byte >>= 1;
+    }
+    byte = (uint32_t)data;
+    if (parity) {
+        if (even_parity) {
+            byte |= 0x100;  // 偶数になるようにパリティを付加します
+        }
+    } else {
+        if (!even_parity) {
+            byte |= 0x100;  // 奇数になるようにパリティを付加します
+        }
+    }
+    pio_sm_put_blocking(pio, sm_tx, (uint32_t)byte);  // TX FIFOへputします
+}
+
+//UART(シリアル通信)で受信する関数
+//
+//
+//even_parity : 偶数か奇数のどちらになるようにパリティを付加されているか。trueで偶数。falseで奇数。
+//parity_check : パリティビットの結果。正しいならtrue。違ったらfalseで、例外処理を用意する。データがなくてもfalseになる。
+unsigned char picoPioUartRx_program_getc(bool even_parity,bool* parity_check) {
+    // if(pio_sm_is_rx_fifo_empty(pio, sm_rx)){
+        // *parity_check = false;
+        // return 0;
+    // }else{
+     while (pio_sm_is_rx_fifo_empty(pio, sm_rx)) {
+        tight_loop_contents();
+        // printf("待機中");
+     }
+     
+    uint32_t c32 = pio_sm_get(pio, sm_rx);
+
+    c32 >>= 23;
+    //パリティビットの検証をする
+    bool real_parity = (c32 & 0x100) != 0;
+    uint8_t byte = c32 & 0xff;
+
+    uint8_t pcheck = 0;
+    for (int i = 0; i < 8; i++) {
+        pcheck ^= byte & 0x1;
+        byte >>= 1;
+    }
+
+    *parity_check = (pcheck == real_parity);
+
+    return (unsigned char)(c32 & 0xff);
+    // }
+}
+    */

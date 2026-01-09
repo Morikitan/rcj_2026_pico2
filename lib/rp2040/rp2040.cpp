@@ -85,13 +85,13 @@ void UseEncoder(){
     if(SerialWatch == "enc"){
         if(isUseDisplay){
             snprintf(DisplayBuffer,DisplayBufferSize,"motor1 : %.2f",motorFrequency[0]);
-            WriteTextOnDisplay(5,20,DisplayBuffer,8,false,false);
-            snprintf(DisplayBuffer,DisplayBufferSize,"motor2 : %.2f",motorFrequency[1]);
             WriteTextOnDisplay(5,30,DisplayBuffer,8,false,false);
-            snprintf(DisplayBuffer,DisplayBufferSize,"motor3 : %.2f",motorFrequency[2]);
+            snprintf(DisplayBuffer,DisplayBufferSize,"motor2 : %.2f",motorFrequency[1]);
             WriteTextOnDisplay(5,40,DisplayBuffer,8,false,false);
+            snprintf(DisplayBuffer,DisplayBufferSize,"motor3 : %.2f",motorFrequency[2]);
+            WriteTextOnDisplay(5,50,DisplayBuffer,8,false,false);
             snprintf(DisplayBuffer,DisplayBufferSize,"motor4 : %.2f",motorFrequency[3]);
-            WriteTextOnDisplay(5,50,DisplayBuffer,8,false,true);
+            WriteTextOnDisplay(5,60,DisplayBuffer,8,false,true);
         }else{
             printf("motor1 : %f m2 : %f m3 : %f m4 : %f",motorFrequency[0],motorFrequency[1],motorFrequency[2],motorFrequency[3]);
         }

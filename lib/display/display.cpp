@@ -86,38 +86,38 @@ void PrintDisplayMode(){
         WriteTextOnDisplay(5,15,"<Home>",12,true,true);
     }else if(DisplayMode == 2){
         SerialWatch = "bal";
-        WriteTextOnDisplay(5,5,"<BallSensor>",12,true,false);
+        WriteTextOnDisplay(5,15,"<BallSensor>",12,true,false);
     }else if(DisplayMode == 3){
         SerialWatch = "bav";
-        WriteTextOnDisplay(5,5,"<BallVector>",12,true,false);
+        WriteTextOnDisplay(5,15,"<BallVector>",12,true,false);
     }else if(DisplayMode == 4){
         SerialWatch = "cam";
-        WriteTextOnDisplay(5,5,"<Camera>",12,true,false);
+        WriteTextOnDisplay(5,15,"<Camera>",12,true,false);
     }else if(DisplayMode == 5){
         SerialWatch = "enc";
-        WriteTextOnDisplay(5,5,"<Encorder>",12,true,false);
+        WriteTextOnDisplay(5,15,"<Encorder>",12,true,false);
     }else if(DisplayMode == 6){
         SerialWatch = "gyr";
-        WriteTextOnDisplay(5,5,"<GyroSensor>",12,true,false);
+        WriteTextOnDisplay(5,15,"<GyroSensor>",12,true,false);
     }else if(DisplayMode == 7){
         SerialWatch = "lin";
-        WriteTextOnDisplay(5,5,"<Line>",12,true,false);
+        WriteTextOnDisplay(5,15,"<Line>",12,true,false);
         DrawCircleOnDisplay(64,0,32);
     }else if(DisplayMode == 8){
         SerialWatch = "mot";
-        WriteTextOnDisplay(5,5,"<MotorFrequency>",12,true,false);
+        WriteTextOnDisplay(5,15,"<MotorFrequency>",12,true,false);
     }else if(DisplayMode == 9){
         SerialWatch = "tim";
-        WriteTextOnDisplay(5,5,"<DeltaTime>",12,true,false);
+        WriteTextOnDisplay(5,15,"<DeltaTime>",12,true,false);
         snprintf(DisplayBuffer,DisplayBufferSize,"%fミリ秒",timer_hw->timerawl / 1000.0-DisplayPreTime);
-        WriteTextOnDisplay(5,20,DisplayBuffer,12,false,true);
+        WriteTextOnDisplay(5,30,DisplayBuffer,12,false,true);
         DisplayPreTime = timer_hw->timerawl / 1000.0;
     }else if(DisplayMode == 10){
         SerialWatch = "vec";
-        WriteTextOnDisplay(5,5,"<LineVector>",12,true,false);
+        WriteTextOnDisplay(5,15,"<LineVector>",12,true,false);
     }else if(DisplayMode == 11){
         SerialWatch = "oth";
-        WriteTextOnDisplay(5,5,"<Others>",12,true,false);
+        WriteTextOnDisplay(5,15,"<Others>",12,true,false);
     }else{
         SerialWatch = "???";
         WriteTextOnDisplay(5,15,"<error>",12,true,true);

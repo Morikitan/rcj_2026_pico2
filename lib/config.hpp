@@ -42,14 +42,14 @@ extern char isYellowMyGoal;
 #define GoalDistance 75 //ゴールの線上にいるときの距離。ゴールの内側にいるか外側にいるかの区別をする用
 
 //main motor
-#define MainMotorPin1_1 1
-#define MainMotorPin1_2 1
-#define MainMotorPin2_1 1
-#define MainMotorPin2_2 1
-#define MainMotorPin3_1 1
-#define MainMotorPin3_2 1
-#define MainMotorPin4_1 1
-#define MainMotorPin4_2 1
+#define MainMotorPin1_1 30
+#define MainMotorPin1_2 31
+#define MainMotorPin2_1 32
+#define MainMotorPin2_2 33
+#define MainMotorPin3_1 34
+#define MainMotorPin3_2 35
+#define MainMotorPin4_1 36
+#define MainMotorPin4_2 37
 extern float TargetFrequency[4];
 
 //dribbler motor
@@ -81,7 +81,7 @@ extern int LeftWall, RightWall;
 #define DisplayI2C i2c1  //i2c0
 #define DisplaySDApin 14 //16
 #define DisplaySCLpin 15 //17
-#define isUseDisplay true
+#define isUseDisplay false
 #define DisplayBufferSize 200
 extern char DisplayBuffer[DisplayBufferSize];
 extern int DisplayMode;

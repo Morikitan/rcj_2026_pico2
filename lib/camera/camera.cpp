@@ -88,13 +88,13 @@ void UseCamera(){
     
     if(SerialWatch == "cam"){
         if(isUseDisplay){
-            WriteTextOnDisplay(5,20,"          MyGoal           OppGoal",8,false,false);
+            WriteTextOnDisplay(5,30,"          MyGoal           OppGoal",8,false,false);
             snprintf(DisplayBuffer,DisplayBufferSize,"Distance : %.1f   %.1f",MyGoal.distance,OpponentGoal.distance);
-            WriteTextOnDisplay(5,30,DisplayBuffer,8,false,false);
-            snprintf(DisplayBuffer,DisplayBufferSize,"Angle    : %.1f   %.1f",MyGoal.angle,OpponentGoal.angle);
             WriteTextOnDisplay(5,40,DisplayBuffer,8,false,false);
+            snprintf(DisplayBuffer,DisplayBufferSize,"Angle    : %.1f   %.1f",MyGoal.angle,OpponentGoal.angle);
+            WriteTextOnDisplay(5,50,DisplayBuffer,8,false,false);
             snprintf(DisplayBuffer,DisplayBufferSize,"LWall : %.1f RWall : %.1f",LeftWall,RightWall);
-            WriteTextOnDisplay(5,52,DisplayBuffer,8,false,true);
+            WriteTextOnDisplay(5,60,DisplayBuffer,8,false,true);
         }else{
             printf("MyGoalDis : %f Angle : %f OppGoalDis : %f Angle : %f LWall : %d RWall : %d\n"
             ,MyGoal.distance,MyGoal.angle,OpponentGoal.distance,OpponentGoal.angle,LeftWall,RightWall);

@@ -64,7 +64,7 @@ void UseGyroSensor(){
         }*/
         if(isBreak == true){
             if(isUseDisplay){
-                WriteTextOnDisplay(5,5,"ジャイロ死亡",24,true,true);
+                WriteTextOnDisplay(5,15,"ジャイロ死亡",24,true,true);
             }else{
                 printf("ジャイロ死亡\n");
             }
@@ -75,9 +75,9 @@ void UseGyroSensor(){
                 if(isUseDisplay){
                     DrawCircleOnDisplay(5,20,20);
                     DrawLineOnDisplay(25,40,20,-radian(AngleX));
-                    WriteTextOnDisplay(60,20,"AngleX",8,false,false);
+                    WriteTextOnDisplay(60,30,"AngleX",8,false,false);
                     snprintf(DisplayBuffer,DisplayBufferSize,"%f",AngleX);
-                    WriteTextOnDisplay(60,30,DisplayBuffer,8,false,true);
+                    WriteTextOnDisplay(60,40,DisplayBuffer,8,false,true);
                 }else{
                     printf("AngleX : %f\n",AngleX);
                 }
