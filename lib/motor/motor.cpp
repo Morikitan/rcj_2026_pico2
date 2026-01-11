@@ -16,14 +16,30 @@ double pretime = 0;
 
 //足回りモーターのピンのモード設定
 void MotorSetup(){
-    gpio_set_function(MainMotorPin1_1,GPIO_FUNC_PWM);
-    gpio_set_function(MainMotorPin1_2,GPIO_FUNC_PWM);
-    gpio_set_function(MainMotorPin1_1,GPIO_FUNC_PWM);
-    gpio_set_function(MainMotorPin1_2,GPIO_FUNC_PWM);
-    gpio_set_function(MainMotorPin1_1,GPIO_FUNC_PWM);
-    gpio_set_function(MainMotorPin1_2,GPIO_FUNC_PWM);
-    gpio_set_function(MainMotorPin1_1,GPIO_FUNC_PWM);
-    gpio_set_function(MainMotorPin4_2,GPIO_FUNC_PWM);
+    gpio_init(PWMpin1);
+    gpio_init(PWMpin2);
+    gpio_init(PWMpin3);
+    gpio_init(PWMpin4);
+    gpio_init(MainMotorPin1_1);
+    gpio_init(MainMotorPin1_2);
+    gpio_init(MainMotorPin2_1);
+    gpio_init(MainMotorPin2_2);
+    gpio_init(MainMotorPin3_1);
+    gpio_init(MainMotorPin3_2);
+    gpio_init(MainMotorPin4_1);
+    gpio_init(MainMotorPin4_2);
+    gpio_set_function(PWMpin1,GPIO_FUNC_PWM);
+    gpio_set_function(PWMpin2,GPIO_FUNC_PWM);
+    gpio_set_function(PWMpin3,GPIO_FUNC_PWM);
+    gpio_set_function(PWMpin4,GPIO_FUNC_PWM);
+    gpio_set_dir(MainMotorPin1_1,GPIO_OUT);
+    gpio_set_dir(MainMotorPin1_2,GPIO_OUT);
+    gpio_set_dir(MainMotorPin2_1,GPIO_OUT);
+    gpio_set_dir(MainMotorPin2_2,GPIO_OUT);
+    gpio_set_dir(MainMotorPin3_1,GPIO_OUT);
+    gpio_set_dir(MainMotorPin3_2,GPIO_OUT);
+    gpio_set_dir(MainMotorPin4_1,GPIO_OUT);
+    gpio_set_dir(MainMotorPin4_2,GPIO_OUT);
 }
 
 //motor : 1～4
@@ -31,60 +47,64 @@ void MotorSetup(){
 //speed : 0～255
 void MainMotorState(int motor,int state,int speed){
     if (motor == 1) {
+        analogWrite(PWMpin1, speed);
         if (state == 0) {
-            analogWrite(MainMotorPin1_1, speed);
-            analogWrite(MainMotorPin1_2, 0);
+            gpio_put(MainMotorPin1_1,1);
+            gpio_put(MainMotorPin1_2,0);
         } else if (state == 1) {
-            analogWrite(MainMotorPin1_1, 0);
-            analogWrite(MainMotorPin1_2, speed);
+            gpio_put(MainMotorPin1_1,0);
+            gpio_put(MainMotorPin1_2,1);
         } else if (state == 2) {
-            analogWrite(MainMotorPin1_1, 0);
-            analogWrite(MainMotorPin1_2, 0);
+            gpio_put(MainMotorPin1_1,0);
+            gpio_put(MainMotorPin1_2,0);
         } else if (state == 3) {
-            analogWrite(MainMotorPin1_1, speed);
-            analogWrite(MainMotorPin1_2, speed);
+            gpio_put(MainMotorPin1_1,1);
+            gpio_put(MainMotorPin1_2,1);
         }
     } else if (motor == 2) {
+        analogWrite(PWMpin2, speed);
         if (state == 0) {
-            analogWrite(MainMotorPin2_1, speed);
-            analogWrite(MainMotorPin2_2, 0);
+            gpio_put(MainMotorPin2_1,1);
+            gpio_put(MainMotorPin2_2,0);
         } else if (state == 1) {
-            analogWrite(MainMotorPin2_1, 0);
-            analogWrite(MainMotorPin2_2, speed);
+            gpio_put(MainMotorPin2_1,0);
+            gpio_put(MainMotorPin2_2,1);
         } else if (state == 2) {
-            analogWrite(MainMotorPin2_1, 0);
-            analogWrite(MainMotorPin2_2, 0);
+            gpio_put(MainMotorPin2_1,0);
+            gpio_put(MainMotorPin2_2,0);
         } else if (state == 3) {
-            analogWrite(MainMotorPin2_1, speed);
-            analogWrite(MainMotorPin2_2, speed);
+            gpio_put(MainMotorPin2_1,1);
+            gpio_put(MainMotorPin2_2,1);
         }
     } else if (motor == 3) {
+        analogWrite(PWMpin1, speed);
         if (state == 0) {
-            analogWrite(MainMotorPin3_1, speed);
-            analogWrite(MainMotorPin3_2, 0);
+            gpio_put(MainMotorPin3_1,1);
+            gpio_put(MainMotorPin3_2,0);
         } else if (state == 1) {
-            analogWrite(MainMotorPin3_1, 0);
-            analogWrite(MainMotorPin3_2, speed);
+            gpio_put(MainMotorPin3_1,0);
+            gpio_put(MainMotorPin3_2,1);
         } else if (state == 2) {
-            analogWrite(MainMotorPin3_1, 0);
-            analogWrite(MainMotorPin3_2, 0);
+            gpio_put(MainMotorPin3_1,0);
+            gpio_put(MainMotorPin3_2,0);
         } else if (state == 3) {
-            analogWrite(MainMotorPin3_1, speed);
-            analogWrite(MainMotorPin3_2, speed);
+            gpio_put(MainMotorPin3_1,1);
+            gpio_put(MainMotorPin3_2,1);
         }
     } else if (motor == 4) {
+        analogWrite(PWMpin1, speed);
         if (state == 0) {
-            analogWrite(MainMotorPin4_1, speed);
-            analogWrite(MainMotorPin4_2, 0);
+            gpio_put(MainMotorPin4_1,1);
+            gpio_put(MainMotorPin4_2,0);
         } else if (state == 1) {
-            analogWrite(MainMotorPin4_1, 0);
-            analogWrite(MainMotorPin4_2, speed);
+            gpio_put(MainMotorPin4_1,0);
+            gpio_put(MainMotorPin4_2,1);
         } else if (state == 2) {
-            analogWrite(MainMotorPin4_1, 0);
-            analogWrite(MainMotorPin4_2, 0);
+            gpio_put(MainMotorPin4_1,0);
+            gpio_put(MainMotorPin4_2,0);
         } else if (state == 3) {
-            analogWrite(MainMotorPin4_1, speed);
-            analogWrite(MainMotorPin4_2, speed);
+            gpio_put(MainMotorPin4_1,1);
+            gpio_put(MainMotorPin4_2,1);
         }
     }
 }
@@ -114,7 +134,7 @@ float preP[4] = {0,0,0,0};
 //タイヤの円周は6π≒19[cm] (参考)19/√2≒13.43
 //float speed[4] : 1秒当たりの回転数(負の値も〇)
 void EncoderAllMainMotorState(float speed[4]){
-    UseEncoder();
+    /*UseEncoder();
     float now = time_us_64() / 1000000.0;
     for (int i = 0;i < 4;i++){
         float dt = now - preTime[i];
@@ -163,6 +183,16 @@ void EncoderAllMainMotorState(float speed[4]){
     }
   }
     //pretime = time_us_64() / 1000000.0;
+    */
+   for(int i = 0;i < 4;i++){
+        if(speed[i] > 0){
+            MainMotorState(i+1,0,(int)(speed[i] / MaxFrequency * 255));
+        }else if(speed[i] < 0){
+            MainMotorState(i+1,1,(int)(speed[i] / MaxFrequency * -255));
+        }else if(speed[i] == 0){
+            MainMotorState(i+1,2,0);
+        }
+   }
 }
 
 
@@ -171,7 +201,7 @@ void EncoderAllMainMotorState(float speed[4]){
 //motor : 1～4
 //speed : 1秒当たりの回転数(負の値も〇)
 void EncoderMainMotorState(int motor, float speed){
-    output[motor - 1] += (speed - motorFrequency[motor - 1]) * Kp;
+    /*output[motor - 1] += (speed - motorFrequency[motor - 1]) * Kp;
     //-255～255の範囲にする
     if(output[motor - 1] > 255) output[motor - 1] = 255.0;
     else if(output[motor - 1] < -255) output[motor - 1] = -255.0;
@@ -179,6 +209,13 @@ void EncoderMainMotorState(int motor, float speed){
     // preMotorFrequency[i] = motorFrequency[i];
 
     if(output[motor - 1] >= 0)MainMotorState(motor, 0, (int)output[motor - 1]);
-    else              MainMotorState(motor, 1, (int)(output[motor - 1] * -1.0)); 
+    else              MainMotorState(motor, 1, (int)(output[motor - 1] * -1.0)); */
+    if(speed > 0){
+        MainMotorState(motor,0,(int)(speed / MaxFrequency * 255));
+    }else if(speed < 0){
+        MainMotorState(motor,1,(int)(speed / MaxFrequency * -255));
+    }else if(speed == 0){
+        MainMotorState(motor,2,0);
+    }
 }
 

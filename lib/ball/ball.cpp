@@ -47,11 +47,10 @@ void BallSetup(){
 //ボールセンサー(赤外線センサー)を使う。
 void UseBallSensor(){
     //ボール検知センサを調べる
-    picoPioUartTx_program_putc(0x01,true);
+    picoPioUartTx_program_putc2(0x01,true);
     for(int i = 0;i <= 31;i++){
-      buffer2[i] = picoPioUartRx_program_getc(true,&parity_check_ball);
+      buffer2[i] = picoPioUartRx_program_getc2(true,&parity_check_ball);
     }
-    i2c_read_blocking(BallI2C,0x42,buffer2,32,false);
     //データを16bitのもとの形に直す
     for(int i = 0;i < 16;i++){
         BallSensor[i] = ((uint16_t)buffer2[i*2] << 8) | buffer2[i*2 + 1];
@@ -157,12 +156,12 @@ void UseBallSensor(){
     }
 }
 
-/*
+
 //UART(シリアル通信)で送信する関数
 //
 //data : 送るデータ(uint8_t型)
 //even_parity : 偶数か奇数のどちらになるようにパリティを付加するか。trueで偶数。falseで奇数。
-void picoPioUartTx_program_putc(unsigned char data, bool even_parity) {
+void picoPioUartTx_program_putc2(unsigned char data, bool even_parity) {
     uint32_t byte = (uint32_t)data;
     uint8_t parity = 0;
     for (int i = 0; i < 8; i++) {
@@ -179,7 +178,7 @@ void picoPioUartTx_program_putc(unsigned char data, bool even_parity) {
             byte |= 0x100;  // 奇数になるようにパリティを付加します
         }
     }
-    pio_sm_put_blocking(pio, sm_tx, (uint32_t)byte);  // TX FIFOへputします
+    pio_sm_put_blocking(pio_ball, sm_tx_ball, (uint32_t)byte);  // TX FIFOへputします
 }
 
 //UART(シリアル通信)で受信する関数
@@ -187,17 +186,16 @@ void picoPioUartTx_program_putc(unsigned char data, bool even_parity) {
 //
 //even_parity : 偶数か奇数のどちらになるようにパリティを付加されているか。trueで偶数。falseで奇数。
 //parity_check : パリティビットの結果。正しいならtrue。違ったらfalseで、例外処理を用意する。データがなくてもfalseになる。
-unsigned char picoPioUartRx_program_getc(bool even_parity,bool* parity_check) {
+unsigned char picoPioUartRx_program_getc2(bool even_parity,bool* parity_check) {
     // if(pio_sm_is_rx_fifo_empty(pio, sm_rx)){
         // *parity_check = false;
         // return 0;
     // }else{
-     while (pio_sm_is_rx_fifo_empty(pio, sm_rx)) {
-        tight_loop_contents();
-        // printf("待機中");
+     while (pio_sm_is_rx_fifo_empty(pio_ball, sm_rx_ball)) {
+        //tight_loop_contents();
      }
-     
-    uint32_t c32 = pio_sm_get(pio, sm_rx);
+    //  printf("きちゃ");
+    uint32_t c32 = pio_sm_get(pio_ball, sm_rx_ball);
 
     c32 >>= 23;
     //パリティビットの検証をする
@@ -215,4 +213,4 @@ unsigned char picoPioUartRx_program_getc(bool even_parity,bool* parity_check) {
     return (unsigned char)(c32 & 0xff);
     // }
 }
-    */
+    

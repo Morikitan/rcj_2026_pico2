@@ -6,8 +6,8 @@ extern "C" {
 
 void BallSetup();
 void UseBallSensor();
-// void picoPioUartTx_program_putc(unsigned char c, bool even_parity);
-// unsigned char picoPioUartRx_program_getc(bool even_parity,bool* parity_check);
+void picoPioUartTx_program_putc2(unsigned char c, bool even_parity);
+unsigned char picoPioUartRx_program_getc2(bool even_parity,bool* parity_check);
 
 #ifdef __cplusplus
 }

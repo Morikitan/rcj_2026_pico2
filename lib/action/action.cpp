@@ -5,6 +5,7 @@
 #include "gyro.hpp"
 #include "line.hpp"
 #include "motor.hpp"
+#include "../rp2040/rp2040.hpp"
 #include "../config.hpp"
 #include "hardware/gpio.h"
 #include "pico/stdlib.h"
@@ -47,8 +48,8 @@ void VariableSetup(){
    10 : vec ラインのベクトルを取得
    11 : oth その他(時によって変わる)
     *******************/
-    SerialWatch = "bal";
-    DisplayMode = 2;//上のコメントでの一番左側の数字
+    SerialWatch = "gyr";
+    DisplayMode = 6;//上のコメントでの一番左側の数字
 
     //必ず変更しましょう。1で黄色ゴールが自分側(相手にシュートされる側)。0で逆
     isYellowMyGoal = 1;

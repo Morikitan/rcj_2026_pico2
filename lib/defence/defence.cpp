@@ -6,6 +6,7 @@
 #include "gyro.hpp"
 #include "line.hpp"
 #include "motor.hpp"
+#include "../rp2040/rp2040.hpp"
 #include "../config.hpp"
 #include "hardware/gpio.h"
 #include "hardware/pwm.h"

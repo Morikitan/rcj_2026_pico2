@@ -1,3 +1,4 @@
+#include "../action/action.hpp"
 #include "display.hpp"
 #include "rp2040.hpp"
 #include "../config.hpp"
@@ -22,6 +23,8 @@ uint offset;
 uint offset2;
 bool parity_check;
 unsigned char encoderData[8];
+
+uint8_t gyroBuffer[2];
 
 //pioをつかったUARTの初期設定
 void RP2040Setup(){
@@ -98,6 +101,31 @@ void UseEncoder(){
     } 
 }
 
+void UseGyroSensor(){
+    picoPioUartTx_program_putc(0x96,true);
+    gyroBuffer[0] = picoPioUartRx_program_getc(true,&parity_check);
+    gyroBuffer[1] = picoPioUartRx_program_getc(true,&parity_check);
+    AngleX = ((buffer[1] << 8) | buffer[0]) / 16.0;
+    if(SerialWatch == "gyr"){
+        if(isUseDisplay){
+            DrawCircleOnDisplay(5,20,20);
+            DrawLineOnDisplay(25,40,20,radian(AngleX));
+            WriteTextOnDisplay(60,30,"AngleX",8,false,false);
+            snprintf(DisplayBuffer,DisplayBufferSize,"%f",AngleX);
+            WriteTextOnDisplay(60,40,DisplayBuffer,8,false,true);
+        }else{
+            printf("AngleX : %f\n",AngleX);
+        }
+    }
+    if(mode == 2 || mode == 4 || mode == 8 || mode == 10){
+        if (AngleX > 180){
+            AngleX -= 180;
+        }else{
+            AngleX += 180;
+        }
+    }
+}
+
 //UART(シリアル通信)で送信する関数
 //
 //data : 送るデータ(uint8_t型)
@@ -134,7 +162,7 @@ unsigned char picoPioUartRx_program_getc(bool even_parity,bool* parity_check) {
     // }else{
      while (pio_sm_is_rx_fifo_empty(pio, sm_rx)) {
         tight_loop_contents();
-        // printf("待機中");
+        //printf("待機中");
      }
      
     uint32_t c32 = pio_sm_get(pio, sm_rx);

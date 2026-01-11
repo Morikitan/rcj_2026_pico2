@@ -22,22 +22,35 @@ int main()
     printf("初期化開始\n");
     PinSetup();
     // ディスプレイ初期化（I2C + ノーブランドSSD1306用）
-    // DisplaySetup();
+    DisplaySetup();
     // RP2040Setup();
-    MotorSetup();
-
-    // BallSetup();
+    //MotorSetup();
+    VariableSetup();
+    //BallSetup();
+    sleep_ms(990);
     printf("初期化終了\n");
-    gpio_set_function(6,GPIO_FUNC_PWM);
     while (true) {
-        analogWrite(MainMotorPin1_1,128);
+        /*gpio_put(MainMotorPin1_1,1);
+        gpio_put(MainMotorPin2_1,1);
+        gpio_put(MainMotorPin3_1,1);
+        gpio_put(MainMotorPin4_1,1);
         analogWrite(6,128);
+        analogWrite(7,128);
+        analogWrite(8,128);
+        analogWrite(10,128);*/
         //UseEncoder();
         // picoPioUartRx_program_putc(0x65,true);
         //picoPioUartTx_program_putc(0x68,true);
         //printf("送信いたしました");
         //sleep_ms(1000);
-        // if(isUseDisplay) PrintDisplayMode();
+        if(isUseDisplay) PrintDisplayMode();
+        DrawCircleOnDisplay(5,20,20);
+        // AngleX = 30.0;
+        UseGyroSensor();
+                    DrawLineOnDisplay(25,40,20,-radian(AngleX));
+                    WriteTextOnDisplay(60,30,"AngleX",8,false,false);
+                    snprintf(DisplayBuffer,DisplayBufferSize,"%f",AngleX);
+                    WriteTextOnDisplay(60,40,DisplayBuffer,8,false,true);
         //WriteTextOnDisplay(5,15,"<Home>",12,true,true);
         // EncoderAllMainMotorState((float[]){1.0,0.0,0.0,0.0});
         // UseEncoder();
@@ -48,7 +61,7 @@ int main()
         // }else if(mode == 3 || mode == 4){
             // Defence();
         // }
-        // UseBallSensor();
-        sleep_ms(100);
+        //UseBallSensor();
+        //sleep_ms(100);
     }
 }

@@ -10,7 +10,7 @@
 #define BNO_ADDRESS 0x28
 
 void GyroSetup(){
-    i2c_init(GyroI2C,115200);
+    /*i2c_init(GyroI2C,115200);
     gpio_set_function(GyroSDApin, GPIO_FUNC_I2C);
     gpio_set_function(GyroSCLpin, GPIO_FUNC_I2C);
     i2c_write_blocking(GyroI2C,BNO_ADDRESS,(uint8_t[]){0x00},1,true);
@@ -37,9 +37,10 @@ void GyroSetup(){
         i2c_write_blocking(GyroI2C, BNO_ADDRESS, data, 2, false); 
         sleep_ms(delay); 
     }
-    printf("bno055は正常に起動しました。\n");
+    printf("bno055は正常に起動しました。\n");*/
 }
 
+/*
 void UseGyroSensor(){
     uint8_t buffer[2];
     bool isBreak = false;
@@ -56,12 +57,12 @@ void UseGyroSensor(){
         i2c_write_blocking(GyroI2C, BNO_ADDRESS, (uint8_t[]){0x1A}, 1, true);
         isBreak = false; 
         i2cTime = time_us_32() / 1000000.0;
-        /*while(i2c_get_read_available(i2c1) == 0){
-            if(time_us_32() / 1000000.0 - i2cTime > 0.1){
-                isBreak = true;
-                break;
-            }
-        }*/
+        // while(i2c_get_read_available(i2c1) == 0){
+            // if(time_us_32() / 1000000.0 - i2cTime > 0.1){
+                // isBreak = true;
+                // break;
+            // }
+        // }
         if(isBreak == true){
             if(isUseDisplay){
                 WriteTextOnDisplay(5,15,"ジャイロ死亡",24,true,true);
@@ -92,3 +93,4 @@ void UseGyroSensor(){
         }
     }
 }
+*/

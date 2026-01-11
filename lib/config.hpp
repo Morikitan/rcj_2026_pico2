@@ -81,14 +81,14 @@ extern int LeftWall, RightWall;
 #define DisplayI2C i2c1  //i2c0
 #define DisplaySDApin 14 //16
 #define DisplaySCLpin 15 //17
-#define isUseDisplay false
+#define isUseDisplay true
 #define DisplayBufferSize 200
 extern char DisplayBuffer[DisplayBufferSize];
 extern int DisplayMode;
 
 //gyro sensor
 #define GyroI2C i2c1
-#define GyroSDApin 14
+#define GyroSDApin 14 //サブマイコンに追放されました
 #define GyroSCLpin 15
 
 extern float AngleX, AngleY, AngleZ; //時計回り0～360°
@@ -104,6 +104,12 @@ extern char LineSensorD[9];
 extern char LineSensorE[48];
 extern int AllLineSensorA, AllLineSensorB, AllLineSensorC, AllLineSensorD, AllLineSensorE, AllLineSensor;
 extern int ErorrLineSensor;
+
+//motor
+#define PWMpin1 6
+#define PWMpin2 7
+#define PWMpin3 8
+#define PWMpin4 10
 
 //UART for RP2040
 #define RP2040_UART_TXpin 43 //J12の右端

@@ -5,7 +5,7 @@ extern "C" {
 #endif
 
 void GyroSetup();
-void UseGyroSensor();
+// void UseGyroSensor();
 
 #ifdef __cplusplus
 }
